@@ -1,9 +1,6 @@
-package com.example.demo;
+package com.cakedevs.ChildLabourBot;
 
-import com.example.demo.listeners.PingListener;
-import com.example.demo.listeners.RaceListener;
-import com.example.demo.listeners.RateListener;
-import com.example.demo.listeners.UserListener;
+import com.cakedevs.ChildLabourBot.listeners.SpeakListener;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,26 +11,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
 @SpringBootApplication
-public class DiscordBotApplication {
+public class ChildLabourBotApplication {
 
 	@Autowired
 	private Environment env;
 
-
 	@Autowired
-	private PingListener pingListener;
-
-	@Autowired
-	private RateListener rateListener;
-
-	@Autowired
-	private RaceListener raceListener;
-
-	@Autowired
-	private UserListener userListener;
+	private SpeakListener speakListener;
 
 	public static void main(String[] args) {
-		SpringApplication.run(DiscordBotApplication.class, args);
+		SpringApplication.run(ChildLabourBotApplication.class, args);
 	}
 
 	@Bean
@@ -41,14 +28,12 @@ public class DiscordBotApplication {
 	public DiscordApi discordApi() {
 		String token = env.getProperty("TOKEN");
 		DiscordApi api = new DiscordApiBuilder().setToken(token)
-				.setAllIntents()
+				.setAllNonPrivilegedIntents()
 				.login()
 				.join();
 
-		api.addMessageCreateListener(pingListener);
-		api.addMessageCreateListener(rateListener);
-		api.addMessageCreateListener(raceListener);
-		api.addMessageCreateListener(userListener);
+		api.addMessageCreateListener(speakListener);
+
 		return api;
 	}
 }
