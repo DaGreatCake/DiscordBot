@@ -27,17 +27,13 @@ public class NeukseksListenerImpl implements NeukseksListener {
 
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
-        ChildLabourBotApplication childLabourBotApplication = new ChildLabourBotApplication();
-        DiscordApi discordApi = childLabourBotApplication.discordApi();
-
         if(messageCreateEvent.getMessageContent().startsWith("#neukseks")) {
             messageCreateEvent.getChannel().sendMessage("piemoool");
             String[] command = messageCreateEvent.getMessageContent().split(" ");
             if (command.length > 1) {
                 String userID = command[1];
                 Optional<User> userOpt = userRepository.findUserById(userID);
-                CompletableFuture<org.javacord.api.entity.user.User> userOptional1 = discordApi.getUserById(userID);
-                CompletableFuture<org.javacord.api.entity.user.User> userOptional2 = discordApi.getUserById(messageCreateEvent.getMessageAuthor().getId());
+
                 if (userOpt.isPresent()) {
                     if (messageCreateEvent.getMessageAuthor().getId() != Long.parseLong(userOpt.get().getId())) {
                         Random r = new Random();
@@ -46,7 +42,8 @@ public class NeukseksListenerImpl implements NeukseksListener {
 
                         try {
                             messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
-                                     userOptional1.get().getMentionTag() + " wil je kontjebonken met " + userOptional2.get().getMentionTag() + "?",
+                                     messageCreateEvent.getApi().getUserById(userID).get().getMentionTag() + " wil je kontjebonken met "
+                                             + messageCreateEvent.getApi().getUserById(messageCreateEvent.getMessageAuthor().getId()).get().getMentionTag() + "?",
                                     "Degene die als eerst de rekensom oplost, raakt zwanger.",
                                     null,
                                     null,
