@@ -1,6 +1,7 @@
 package com.cakedevs.ChildLabourBot;
 
 import com.cakedevs.ChildLabourBot.listeners.SpeakListener;
+import com.cakedevs.ChildLabourBot.listeners.UserListener;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class ChildLabourBotApplication {
 	@Autowired
 	private SpeakListener speakListener;
 
+	@Autowired
+	private UserListener userListener;
+
 	public static void main(String[] args) {
 		SpringApplication.run(ChildLabourBotApplication.class, args);
 	}
@@ -33,6 +37,7 @@ public class ChildLabourBotApplication {
 				.join();
 
 		api.addMessageCreateListener(speakListener);
+		api.addMessageCreateListener(userListener);
 
 		return api;
 	}
