@@ -80,7 +80,11 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                 }
                                                 LocalDateTime now = LocalDateTime.now();
                                                 LocalDateTime cooldown = now.plusHours(4);
-                                                cooldowns.put(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
+                                                if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
+                                                    cooldowns.replace(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
+                                                } else {
+                                                    cooldowns.put(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
+                                                }
                                             });
                                         } else if (listener.getEmoji().equalsEmoji("\uD83D\uDC4E") && listener.getUser().get().getId() == Long.parseLong(finalUserID)) {
                                             message.edit(new EmbedBuilder()
