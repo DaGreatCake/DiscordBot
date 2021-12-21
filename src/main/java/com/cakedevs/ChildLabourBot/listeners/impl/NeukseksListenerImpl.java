@@ -34,9 +34,6 @@ public class NeukseksListenerImpl implements NeukseksListener {
             String[] command = messageCreateEvent.getMessageContent().split(" ");
             if (command.length > 1) {
                 String userID = command[1];
-                userID = userID.replace("<", "");
-                userID = userID.replace("@", "");
-                userID = userID.replace(">", "");
                 Optional<User> userOpt = userRepository.findUserById(userID);
                 CompletableFuture<org.javacord.api.entity.user.User> userOptional1 = discordApi.getUserById(userID);
                 CompletableFuture<org.javacord.api.entity.user.User> userOptional2 = discordApi.getUserById(messageCreateEvent.getMessageAuthor().getId());
@@ -46,7 +43,6 @@ public class NeukseksListenerImpl implements NeukseksListener {
                         int num1 = r.nextInt(20);
                         int num2 = r.nextInt(100);
 
-                        String finalUserID = userID;
                         try {
                             messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
                                      userOptional1.get().getMentionTag() + " wil je kontjebonken met " + userOptional2.get().getMentionTag() + "?",
@@ -58,12 +54,12 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                 message.addReaction("\uD83D\uDC4D");
                                 message.addReaction("\uD83D\uDC4E");
                                 message.addReactionAddListener(listener -> {
-                                    if (listener.getEmoji().equalsEmoji("\uD83D\uDC4D") && listener.getUser().get().getId() == Long.parseLong(finalUserID)) {
+                                    if (listener.getEmoji().equalsEmoji("\uD83D\uDC4D") && listener.getUser().get().getId() == Long.parseLong(userID)) {
                                         message.edit(new EmbedBuilder()
                                                 .setTitle("Lekkere neukseks hmmm")
                                                 .setDescription(num1 + " * " + num2)
                                                 .setFooter("ziek man"));
-                                    } else if (listener.getEmoji().equalsEmoji("\uD83D\uDC4E") && listener.getUser().get().getId() == Long.parseLong(finalUserID)) {
+                                    } else if (listener.getEmoji().equalsEmoji("\uD83D\uDC4E") && listener.getUser().get().getId() == Long.parseLong(userID)) {
                                         message.edit(new EmbedBuilder()
                                                 .setTitle("Jammer dan")
                                                 .setDescription("Geen neukseks for you."));
