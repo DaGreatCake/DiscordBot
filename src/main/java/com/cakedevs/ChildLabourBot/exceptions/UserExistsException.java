@@ -1,4 +1,4 @@
-package com.cakedevs.exceptions;
+package com.cakedevs.ChildLabourBot.exceptions;
 
 public class UserExistsException extends Exception {
     private final String id;

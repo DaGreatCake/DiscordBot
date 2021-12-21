@@ -1,4 +1,4 @@
-package com.cakedevs.repository;
+package com.cakedevs.ChildLabourBot.repository;
 
 import com.cakedevs.entities.User;
 import org.springframework.data.repository.CrudRepository;

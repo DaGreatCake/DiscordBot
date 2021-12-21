@@ -1,4 +1,4 @@
-package com.cakedevs.services;
+package com.cakedevs.ChildLabourBot.services;
 
 import org.javacord.api.entity.channel.Channel;
 import org.javacord.api.entity.channel.TextChannel;

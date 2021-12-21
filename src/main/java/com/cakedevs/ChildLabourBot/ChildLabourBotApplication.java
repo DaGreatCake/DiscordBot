@@ -1,4 +1,4 @@
-package com.cakedevs;
+package com.cakedevs.ChildLabourBot;
 
 import com.cakedevs.listeners.UserListener;
 import com.cakedevs.listeners.PingListener;

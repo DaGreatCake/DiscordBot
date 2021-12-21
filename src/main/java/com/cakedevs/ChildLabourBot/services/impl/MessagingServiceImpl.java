@@ -1,7 +1,7 @@
-package com.cakedevs.services.impl;
+package com.cakedevs.ChildLabourBot.services.impl;
 
 import com.cakedevs.listeners.DeleteReactionListener;
-import com.cakedevs.services.MessagingService;
+import com.cakedevs.ChildLabourBot.services.MessagingService;
 import org.javacord.api.entity.channel.Channel;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;

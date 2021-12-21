@@ -1,7 +1,7 @@
-package com.cakedevs.listeners.impl;
+package com.cakedevs.ChildLabourBot.listeners.impl;
 
-import com.cakedevs.listeners.RateListener;
-import com.cakedevs.services.MessagingService;
+import com.cakedevs.ChildLabourBot.listeners.RateListener;
+import com.cakedevs.ChildLabourBot.services.MessagingService;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.message.embed.EmbedBuilder;

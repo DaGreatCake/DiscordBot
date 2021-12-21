@@ -1,4 +1,4 @@
-package com.cakedevs.services;
+package com.cakedevs.ChildLabourBot.services;
 
 import com.cakedevs.entities.User;
 import com.cakedevs.exceptions.UserExistsException;

@@ -1,8 +1,8 @@
-package com.cakedevs.services.impl;
+package com.cakedevs.ChildLabourBot.services.impl;
 
 import com.cakedevs.entities.User;
 import com.cakedevs.exceptions.UserExistsException;
-import com.cakedevs.services.UserService;
+import com.cakedevs.ChildLabourBot.services.UserService;
 import com.cakedevs.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

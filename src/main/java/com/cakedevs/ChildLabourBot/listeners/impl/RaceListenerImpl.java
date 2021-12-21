@@ -1,7 +1,7 @@
-package com.cakedevs.listeners.impl;
+package com.cakedevs.ChildLabourBot.listeners.impl;
 
-import com.cakedevs.listeners.RaceListener;
-import com.cakedevs.services.MessagingService;
+import com.cakedevs.ChildLabourBot.listeners.RaceListener;
+import com.cakedevs.ChildLabourBot.services.MessagingService;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,10 +1,10 @@
-package com.cakedevs.listeners.impl;
+package com.cakedevs.ChildLabourBot.listeners.impl;
 
 import com.cakedevs.entities.User;
 import com.cakedevs.exceptions.UserExistsException;
-import com.cakedevs.listeners.UserListener;
-import com.cakedevs.services.MessagingService;
-import com.cakedevs.services.UserService;
+import com.cakedevs.ChildLabourBot.listeners.UserListener;
+import com.cakedevs.ChildLabourBot.services.MessagingService;
+import com.cakedevs.ChildLabourBot.services.UserService;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
-package com.cakedevs.listeners.impl;
+package com.cakedevs.ChildLabourBot.listeners.impl;
 
-import com.cakedevs.listeners.PingListener;
+import com.cakedevs.ChildLabourBot.listeners.PingListener;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.springframework.stereotype.Component;
 
