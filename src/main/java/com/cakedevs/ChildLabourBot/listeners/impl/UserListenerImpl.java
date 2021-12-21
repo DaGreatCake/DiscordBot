@@ -18,38 +18,28 @@ public class UserListenerImpl implements UserListener {
 
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
-        if(messageCreateEvent.getMessageContent().startsWith("!user")) {
-            messageCreateEvent.getChannel().type();
-            if(messageCreateEvent.getMessageContent().equalsIgnoreCase("!user create")) {
-                // Create the user
-                User user;
-                try {
-                    user = userService.createUser(messageCreateEvent.getMessageAuthor().getIdAsString(), messageCreateEvent.getMessageAuthor().getDisplayName());
-                } catch (UserExistsException e) {
-                    messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
-                            "User Creator",
-                            e.getMessage(),
-                            null,
-                            null,
-                            messageCreateEvent.getChannel());
-                    return;
-                }
-
-                //If successful send a message about the great success
+        if(messageCreateEvent.getMessageContent().equalsIgnoreCase("#start")) {
+            // Create the user
+            User user;
+            try {
+                user = userService.createUser(messageCreateEvent.getMessageAuthor().getIdAsString(), messageCreateEvent.getMessageAuthor().getDisplayName());
+            } catch (UserExistsException e) {
                 messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
-                        "User Creator",
-                        "User has successfully been created for " + user.getName(),
-                        null,
-                        "https://i.imgur.com/XJyemeI.jpg",
-                        messageCreateEvent.getChannel());
-            } else {
-                messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
-                        "User Creator",
-                        "Are you trying to use the `!user create` command? Please use the syntax `!user create`. Thanks!",
+                        "Wat de frick man, je hebt dit al gedaan.",
+                        e.getMessage(),
                         null,
                         null,
                         messageCreateEvent.getChannel());
+                return;
             }
+
+            //If successful send a message about the great success
+            messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
+                    "Child Labour Initiate",
+                    "Lekker man " + user.getName() + ". Nu kun je enge doekoes verdienen.",
+                    null,
+                    "https://static.wikia.nocookie.net/clashofclans/images/5/56/Miner_info.png",
+                    messageCreateEvent.getChannel());
         }
     }
 }

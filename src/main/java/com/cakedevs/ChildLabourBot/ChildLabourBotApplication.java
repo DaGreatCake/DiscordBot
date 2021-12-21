@@ -1,9 +1,6 @@
 package com.cakedevs.ChildLabourBot;
 
-import com.cakedevs.ChildLabourBot.listeners.UserListener;
-import com.cakedevs.ChildLabourBot.listeners.PingListener;
-import com.cakedevs.ChildLabourBot.listeners.RaceListener;
-import com.cakedevs.ChildLabourBot.listeners.RateListener;
+import com.cakedevs.ChildLabourBot.listeners.*;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +24,13 @@ public class ChildLabourBotApplication {
 	private RateListener rateListener;
 
 	@Autowired
-	private RaceListener raceListener;
+	private NeukseksListener neukseksListener;
 
 	@Autowired
 	private UserListener userListener;
+
+	@Autowired
+	private DeleteReactionListener deleteReactionListener;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ChildLabourBotApplication.class, args);
@@ -47,8 +47,9 @@ public class ChildLabourBotApplication {
 
 		api.addMessageCreateListener(pingListener);
 		api.addMessageCreateListener(rateListener);
-		api.addMessageCreateListener(raceListener);
+		api.addMessageCreateListener(neukseksListener);
 		api.addMessageCreateListener(userListener);
+		//api.addReactionAddListener(deleteReactionListener);
 		return api;
 	}
 }

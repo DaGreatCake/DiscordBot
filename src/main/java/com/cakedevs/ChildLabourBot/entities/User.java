@@ -12,12 +12,13 @@ public class User {
     @Id
     @Column
     private String id;
-
     private String name;
+    private int bedrock;
 
     public User(String id, String name) {
         this.id = id;
         this.name = name;
+        bedrock = 0;
     }
 
     public User() {}
@@ -36,5 +37,13 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getBedrock() {
+        return bedrock;
+    }
+
+    public void setBedrock(int bedrock) {
+        this.bedrock = bedrock;
     }
 }
