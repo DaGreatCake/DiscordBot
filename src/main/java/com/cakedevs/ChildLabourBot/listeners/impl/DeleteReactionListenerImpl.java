@@ -1,6 +1,6 @@
-package com.cakedevs.ChildLabourBot.listeners.impl;
+package com.cakedevs.listeners.impl;
 
-import com.cakedevs.ChildLabourBot.listeners.DeleteReactionListener;
+import com.cakedevs.listeners.DeleteReactionListener;
 import org.javacord.api.event.message.reaction.ReactionAddEvent;
 import org.springframework.stereotype.Component;
 

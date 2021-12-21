@@ -1,8 +1,9 @@
-package com.cakedevs.ChildLabourBot.services;
+package com.cakedevs.services;
 
-import com.cakedevs.ChildLabourBot.entities.User;
-import com.cakedevs.ChildLabourBot.exceptions.UserExistsException;
+import com.cakedevs.entities.User;
+import com.cakedevs.exceptions.UserExistsException;
 
 public interface UserService {
+
     User createUser(String id, String name) throws UserExistsException;
 }

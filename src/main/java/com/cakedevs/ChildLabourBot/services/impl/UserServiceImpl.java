@@ -1,9 +1,9 @@
-package com.cakedevs.ChildLabourBot.services.impl;
+package com.cakedevs.services.impl;
 
-import com.cakedevs.ChildLabourBot.entities.User;
-import com.cakedevs.ChildLabourBot.exceptions.UserExistsException;
-import com.cakedevs.ChildLabourBot.repository.UserRepository;
-import com.cakedevs.ChildLabourBot.services.UserService;
+import com.cakedevs.entities.User;
+import com.cakedevs.exceptions.UserExistsException;
+import com.cakedevs.services.UserService;
+import com.cakedevs.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @Component
 public class UserServiceImpl implements UserService {
+
     @Autowired
     private UserRepository userRepository;
 

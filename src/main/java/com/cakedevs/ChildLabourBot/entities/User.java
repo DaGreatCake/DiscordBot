@@ -1,4 +1,4 @@
-package com.cakedevs.ChildLabourBot.entities;
+package com.cakedevs.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

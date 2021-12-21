@@ -1,4 +1,4 @@
-package com.cakedevs.ChildLabourBot.listeners;
+package com.cakedevs.listeners;
 
 import org.javacord.api.listener.message.reaction.ReactionAddListener;
 

@@ -1,8 +1,7 @@
-package com.cakedevs.ChildLabourBot.services.impl;
+package com.cakedevs.services.impl;
 
-import com.cakedevs.ChildLabourBot.listeners.DeleteReactionListener;
-import com.cakedevs.ChildLabourBot.services.MessagingService;
-
+import com.cakedevs.listeners.DeleteReactionListener;
+import com.cakedevs.services.MessagingService;
 import org.javacord.api.entity.channel.Channel;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;
@@ -29,12 +28,12 @@ public class MessagingServiceImpl implements MessagingService {
         int blue = (int) Math.floor(Math.random() * 255);
 
         return new MessageBuilder().setEmbed(new EmbedBuilder()
-                        .setAuthor(author)
-                        .setTitle(title)
-                        .setDescription(description)
-                        .setFooter(footer)
-                        .setThumbnail(thumbnail)
-                        .setColor(new Color(red, green, blue)))
+        .setAuthor(author)
+        .setTitle(title)
+        .setDescription(description)
+        .setFooter(footer)
+        .setThumbnail(thumbnail)
+        .setColor(new Color(red, green, blue)))
                 .send(channel);
     }
 

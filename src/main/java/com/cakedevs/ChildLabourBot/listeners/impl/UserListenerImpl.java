@@ -1,10 +1,10 @@
-package com.cakedevs.ChildLabourBot.listeners.impl;
+package com.cakedevs.listeners.impl;
 
-import com.cakedevs.ChildLabourBot.entities.User;
-import com.cakedevs.ChildLabourBot.exceptions.UserExistsException;
-import com.cakedevs.ChildLabourBot.listeners.UserListener;
-import com.cakedevs.ChildLabourBot.services.MessagingService;
-import com.cakedevs.ChildLabourBot.services.UserService;
+import com.cakedevs.entities.User;
+import com.cakedevs.exceptions.UserExistsException;
+import com.cakedevs.listeners.UserListener;
+import com.cakedevs.services.MessagingService;
+import com.cakedevs.services.UserService;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,6 +15,7 @@ public class UserListenerImpl implements UserListener {
     private MessagingService messagingService;
     @Autowired
     private UserService userService;
+
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
         if(messageCreateEvent.getMessageContent().startsWith("!user")) {
@@ -34,17 +35,17 @@ public class UserListenerImpl implements UserListener {
                     return;
                 }
 
-                //If successful send message
+                //If successful send a message about the great success
                 messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
                         "User Creator",
                         "User has successfully been created for " + user.getName(),
                         null,
-                        null,
+                        "https://i.imgur.com/XJyemeI.jpg",
                         messageCreateEvent.getChannel());
             } else {
                 messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
                         "User Creator",
-                        "POEPENNNNN",
+                        "Are you trying to use the `!user create` command? Please use the syntax `!user create`. Thanks!",
                         null,
                         null,
                         messageCreateEvent.getChannel());

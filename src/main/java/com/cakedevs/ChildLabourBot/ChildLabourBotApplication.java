@@ -1,7 +1,9 @@
-package com.cakedevs.ChildLabourBot;
+package com.cakedevs;
 
-import com.cakedevs.ChildLabourBot.listeners.SpeakListener;
-import com.cakedevs.ChildLabourBot.listeners.UserListener;
+import com.cakedevs.listeners.UserListener;
+import com.cakedevs.listeners.PingListener;
+import com.cakedevs.listeners.RaceListener;
+import com.cakedevs.listeners.RateListener;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +19,15 @@ public class ChildLabourBotApplication {
 	@Autowired
 	private Environment env;
 
+
 	@Autowired
-	private SpeakListener speakListener;
+	private PingListener pingListener;
+
+	@Autowired
+	private RateListener rateListener;
+
+	@Autowired
+	private RaceListener raceListener;
 
 	@Autowired
 	private UserListener userListener;
@@ -32,13 +41,14 @@ public class ChildLabourBotApplication {
 	public DiscordApi discordApi() {
 		String token = env.getProperty("TOKEN");
 		DiscordApi api = new DiscordApiBuilder().setToken(token)
-				.setAllNonPrivilegedIntents()
+				.setAllIntents()
 				.login()
 				.join();
 
-		api.addMessageCreateListener(speakListener);
+		api.addMessageCreateListener(pingListener);
+		api.addMessageCreateListener(rateListener);
+		api.addMessageCreateListener(raceListener);
 		api.addMessageCreateListener(userListener);
-
 		return api;
 	}
 }
