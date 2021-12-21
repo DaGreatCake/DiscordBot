@@ -1,9 +1,9 @@
 package com.cakedevs.ChildLabourBot;
 
-import com.cakedevs.listeners.UserListener;
-import com.cakedevs.listeners.PingListener;
-import com.cakedevs.listeners.RaceListener;
-import com.cakedevs.listeners.RateListener;
+import com.cakedevs.ChildLabourBot.listeners.UserListener;
+import com.cakedevs.ChildLabourBot.listeners.PingListener;
+import com.cakedevs.ChildLabourBot.listeners.RaceListener;
+import com.cakedevs.ChildLabourBot.listeners.RateListener;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
