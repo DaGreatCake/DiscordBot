@@ -30,7 +30,8 @@ public class NeukseksListenerImpl implements NeukseksListener {
         ChildLabourBotApplication childLabourBotApplication = new ChildLabourBotApplication();
         DiscordApi discordApi = childLabourBotApplication.discordApi();
 
-        if(messageCreateEvent.getMessageContent().startsWith("+neukseks")) {
+        if(messageCreateEvent.getMessageContent().startsWith("#neukseks")) {
+            messageCreateEvent.getChannel().sendMessage("piemoool");
             String[] command = messageCreateEvent.getMessageContent().split(" ");
             if (command.length > 1) {
                 String userID = command[1];
