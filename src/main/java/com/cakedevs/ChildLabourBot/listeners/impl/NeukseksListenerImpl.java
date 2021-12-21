@@ -108,7 +108,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
                 }
             }
         } else {
-            Duration difference = Duration.between(LocalDateTime.now(), cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()));
+            Duration difference = Duration.between(LocalDateTime.now().toInstant(ZoneOffset.UTC), cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()));
             messageCreateEvent.getChannel().sendMessage("Bro rustig man bro, je moet nog " + difference.toHours() + " uur, "
                     + difference.toMinutesPart() + " minuten en " + difference.toSecondsPart() + " seconden wachten.");
         }
