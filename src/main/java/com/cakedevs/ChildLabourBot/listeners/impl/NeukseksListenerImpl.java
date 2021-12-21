@@ -6,13 +6,13 @@ import com.cakedevs.ChildLabourBot.repository.UserRepository;
 import com.cakedevs.ChildLabourBot.services.MessagingService;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.event.message.MessageCreateEvent;
-import org.javacord.api.listener.message.MessageCreateListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component
 public class NeukseksListenerImpl implements NeukseksListener {
@@ -25,6 +25,8 @@ public class NeukseksListenerImpl implements NeukseksListener {
 
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
+        AtomicBoolean done = new AtomicBoolean(false);
+
         if(messageCreateEvent.getMessageContent().startsWith("+neukseks")) {
             String[] command = messageCreateEvent.getMessageContent().split(" ");
             if (command.length > 1) {
@@ -60,8 +62,9 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                 .setDescription(num1 + " * " + num2)
                                                 .setFooter("ziek man"));
                                         message.getChannel().addMessageCreateListener(messageCreateListener -> {
-                                            if (messageCreateListener.getMessageContent().equals(Integer.toString(num1*num2))) {
+                                            if (messageCreateListener.getMessageContent().equals(Integer.toString(num1*num2)) && !done.get()) {
                                                 messageCreateEvent.getChannel().sendMessage(messageCreateListener.getMessageAuthor().getName() + " took the kids. Can I at least see them at Christmas?");
+                                                done.set(true);
                                             }
                                         });
                                     } else if (listener.getEmoji().equalsEmoji("\uD83D\uDC4E") && listener.getUser().get().getId() == Long.parseLong(finalUserID)) {
