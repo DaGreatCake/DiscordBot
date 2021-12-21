@@ -18,7 +18,7 @@ public class UserListenerImpl implements UserListener {
 
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
-        if(messageCreateEvent.getMessageContent().equalsIgnoreCase("#start")) {
+        if(messageCreateEvent.getMessageContent().equalsIgnoreCase("+start")) {
             // Create the user
             User user;
             try {
