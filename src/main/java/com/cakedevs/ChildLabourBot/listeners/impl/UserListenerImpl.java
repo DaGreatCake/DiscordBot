@@ -1,7 +1,7 @@
 package com.cakedevs.ChildLabourBot.listeners.impl;
 
-import com.cakedevs.entities.User;
-import com.cakedevs.exceptions.UserExistsException;
+import com.cakedevs.ChildLabourBot.entities.User;
+import com.cakedevs.ChildLabourBot.exceptions.UserExistsException;
 import com.cakedevs.ChildLabourBot.listeners.UserListener;
 import com.cakedevs.ChildLabourBot.services.MessagingService;
 import com.cakedevs.ChildLabourBot.services.UserService;

@@ -1,6 +1,6 @@
 package com.cakedevs.ChildLabourBot.repository;
 
-import com.cakedevs.entities.User;
+import com.cakedevs.ChildLabourBot.entities.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
