@@ -6,6 +6,7 @@ import com.cakedevs.ChildLabourBot.repository.UserRepository;
 import com.cakedevs.ChildLabourBot.services.MessagingService;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.event.message.MessageCreateEvent;
+import org.javacord.api.listener.message.MessageCreateListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -58,6 +59,11 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                 .setTitle("Lekkere neukseks hmmm")
                                                 .setDescription(num1 + " * " + num2)
                                                 .setFooter("ziek man"));
+                                        message.getChannel().addMessageCreateListener(messageCreateListener -> {
+                                            if (messageCreateListener.getMessageContent().equals(Integer.toString(num1*num2))) {
+                                                messageCreateEvent.getChannel().sendMessage(messageCreateListener.getMessageAuthor().getName() + " took the kids. Can I at least see them at Christmas?");
+                                            }
+                                        });
                                     } else if (listener.getEmoji().equalsEmoji("\uD83D\uDC4E") && listener.getUser().get().getId() == Long.parseLong(finalUserID)) {
                                         message.edit(new EmbedBuilder()
                                                 .setTitle("Jammer dan")
