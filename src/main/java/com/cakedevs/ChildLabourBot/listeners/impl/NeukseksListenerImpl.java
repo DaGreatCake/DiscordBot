@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Random;
@@ -26,7 +28,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
     @Autowired
     private UserRepository userRepository;
 
-    private HashMap<String, LocalDateTime> cooldowns = new HashMap<String, LocalDateTime>();
+    private HashMap<String, Instant> cooldowns = new HashMap<String, Instant>();
 
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
@@ -34,7 +36,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
         boolean allow = true;
 
         if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
-            if (cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()).isAfter(LocalDateTime.now())) {
+            if (cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()).isAfter(LocalDateTime.now().toInstant(ZoneOffset.UTC))) {
                 allow = false;
             }
         }
@@ -78,8 +80,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                     messageCreateEvent.getChannel().sendMessage(messageCreateListener.getMessageAuthor().getName() + " took the kids. Can I at least see them at Christmas?");
                                                     done.set(true);
                                                 }
-                                                LocalDateTime now = LocalDateTime.now();
-                                                LocalDateTime cooldown = now.plusHours(4);
+                                                Instant cooldown = LocalDateTime.now().plusHours(4).toInstant(ZoneOffset.UTC);
                                                 if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
                                                     cooldowns.replace(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
                                                 } else {
