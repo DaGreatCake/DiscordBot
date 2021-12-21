@@ -76,15 +76,17 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                     .setDescription(num1 + " * " + num2)
                                                     .setFooter("ziek man"));
                                             message.getChannel().addMessageCreateListener(messageCreateListener -> {
+                                                Instant cooldown = LocalDateTime.now().plusHours(4).toInstant(ZoneOffset.UTC);
+                                                if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
+                                                    if (cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()).isAfter(LocalDateTime.now().toInstant(ZoneOffset.UTC)) && !done.get()) {
+                                                        cooldowns.replace(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
+                                                    }
+                                                } else {
+                                                    cooldowns.put(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
+                                                }
                                                 if (messageCreateListener.getMessageContent().equals(Integer.toString(num1*num2)) && !done.get()) {
                                                     messageCreateEvent.getChannel().sendMessage(messageCreateListener.getMessageAuthor().getName() + " took the kids. Can I at least see them at Christmas?");
                                                     done.set(true);
-                                                }
-                                                Instant cooldown = LocalDateTime.now().plusHours(4).toInstant(ZoneOffset.UTC);
-                                                if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
-                                                    cooldowns.replace(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
-                                                } else {
-                                                    cooldowns.put(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
                                                 }
                                             });
                                         } else if (listener.getEmoji().equalsEmoji("\uD83D\uDC4E") && listener.getUser().get().getId() == Long.parseLong(finalUserID)) {
