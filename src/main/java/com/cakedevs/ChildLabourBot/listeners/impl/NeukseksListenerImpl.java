@@ -40,8 +40,9 @@ public class NeukseksListenerImpl implements NeukseksListener {
                 allow = false;
             }
         }
-        if (allow) {
-            if(messageCreateEvent.getMessageContent().startsWith("+neukseks")) {
+
+        if(messageCreateEvent.getMessageContent().startsWith("+neukseks")) {
+            if (allow) {
                 String[] command = messageCreateEvent.getMessageContent().split(" ");
                 if (command.length > 1) {
                     String userID = command[1];
@@ -108,11 +109,11 @@ public class NeukseksListenerImpl implements NeukseksListener {
                 } else {
                     messageCreateEvent.getChannel().sendMessage("Bro ga iemand pingen in je command dan ofzo?");
                 }
+            } else {
+                Duration difference = Duration.between(LocalDateTime.now().toInstant(ZoneOffset.UTC), cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()));
+                messageCreateEvent.getChannel().sendMessage("Bro rustig man bro, je moet nog " + difference.toHours() + " uur, "
+                        + difference.toMinutesPart() + " minuten en " + difference.toSecondsPart() + " seconden wachten.");
             }
-        } else {
-            Duration difference = Duration.between(LocalDateTime.now().toInstant(ZoneOffset.UTC), cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()));
-            messageCreateEvent.getChannel().sendMessage("Bro rustig man bro, je moet nog " + difference.toHours() + " uur, "
-                    + difference.toMinutesPart() + " minuten en " + difference.toSecondsPart() + " seconden wachten.");
         }
     }
 }
