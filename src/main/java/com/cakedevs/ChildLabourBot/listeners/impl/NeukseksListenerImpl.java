@@ -107,8 +107,10 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                     if (answerListener.getMessageContent().equals(Integer.toString(num1 * num2)) && !done.get()) {
                                                         done.set(true);
                                                         messageCreateEvent.getChannel().sendMessage(answerListener.getMessageAuthor().getName() + " took the kids. Can I at least see them at Christmas?");
+                                                        messageCreateEvent.getChannel().sendMessage("Hoe mag het strontjong gaan heten?");
                                                         messageCreateEvent.getChannel().addMessageCreateListener(childNameListener -> {
                                                             if (childNameListener.getMessageAuthor().getId() == answerListener.getMessageAuthor().getId() && !childCreated.get()) {
+                                                                messageCreateEvent.getChannel().sendMessage("testerino");
                                                                 childCreated.set(true);
                                                                 Child child;
                                                                 String name = answerListener.getMessage().getContent();
