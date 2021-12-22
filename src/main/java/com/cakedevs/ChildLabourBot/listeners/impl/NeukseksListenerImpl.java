@@ -33,6 +33,9 @@ public class NeukseksListenerImpl implements NeukseksListener {
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
         AtomicBoolean done = new AtomicBoolean(false);
+        AtomicBoolean thumbsDown = new AtomicBoolean(false);
+        AtomicBoolean thumbsUp = new AtomicBoolean(false);
+        AtomicBoolean active = new AtomicBoolean(false);
         boolean allow = true;
 
         if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
@@ -42,79 +45,88 @@ public class NeukseksListenerImpl implements NeukseksListener {
         }
 
         if(messageCreateEvent.getMessageContent().startsWith("+neukseks")) {
-            if (allow) {
-                String[] command = messageCreateEvent.getMessageContent().split(" ");
-                if (command.length > 1) {
-                    String userID = command[1];
-                    userID = userID.replace("<", "");
-                    userID = userID.replace("@", "");
-                    userID = userID.replace("!", "");
-                    userID = userID.replace(">", "");
-                    Optional<User> userOpt = userRepository.findUserById(userID);
+            if (!active.get()) {
+                if (allow) {
+                    String[] command = messageCreateEvent.getMessageContent().split(" ");
+                    if (command.length > 1) {
+                        String userID = command[1];
+                        userID = userID.replace("<", "");
+                        userID = userID.replace("@", "");
+                        userID = userID.replace("!", "");
+                        userID = userID.replace(">", "");
+                        Optional<User> userOpt = userRepository.findUserById(userID);
 
-                    if (userOpt.isPresent()) {
-                        if (messageCreateEvent.getMessageAuthor().getId() != Long.parseLong(userOpt.get().getId())) {
-                            Random r = new Random();
-                            int num1 = r.nextInt(20);
-                            int num2 = r.nextInt(100);
+                        if (userOpt.isPresent()) {
+                            if (messageCreateEvent.getMessageAuthor().getId() != Long.parseLong(userOpt.get().getId())) {
+                                Random r = new Random();
+                                int num1 = r.nextInt(20);
+                                int num2 = r.nextInt(100);
 
-                            try {
-                                String finalUserID = userID;
-                                messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
-                                         messageCreateEvent.getApi().getUserById(userID).get().getName() + " wil je kontjebonken met "
-                                                 + messageCreateEvent.getApi().getUserById(messageCreateEvent.getMessageAuthor().getId()).get().getName() + "?",
-                                        "Degene die als eerst de rekensom oplost, raakt zwanger.",
-                                        null,
-                                        null,
-                                        messageCreateEvent.getChannel())
-                                .thenAccept(message -> {
-                                    message.addReaction("\uD83D\uDC4D");
-                                    message.addReaction("\uD83D\uDC4E");
-                                    message.addReactionAddListener(listener -> {
-                                        if (listener.getEmoji().equalsEmoji("\uD83D\uDC4D") && listener.getUser().get().getId() == Long.parseLong(finalUserID)) {
-                                            message.edit(new EmbedBuilder()
-                                                    .setTitle("Lekkere neukseks hmmm")
-                                                    .setDescription(num1 + " * " + num2)
-                                                    .setFooter("ziek man"));
-                                            //while (!done.get()) {
-                                                message.getChannel().addMessageCreateListener(messageCreateListener -> {
-                                                    Instant cooldown = LocalDateTime.now().plusMinutes(1).toInstant(ZoneOffset.UTC);
-                                                    if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
-                                                        if (cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()).isAfter(LocalDateTime.now().toInstant(ZoneOffset.UTC)) && !done.get()) {
-                                                            cooldowns.replace(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
+                                try {
+                                    active.set(true);
+                                    String finalUserID = userID;
+                                    messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
+                                             messageCreateEvent.getApi().getUserById(userID).get().getName() + " wil je kontjebonken met "
+                                                     + messageCreateEvent.getApi().getUserById(messageCreateEvent.getMessageAuthor().getId()).get().getName() + "?",
+                                            "Degene die als eerst de rekensom oplost, raakt zwanger.",
+                                            null,
+                                            null,
+                                            messageCreateEvent.getChannel())
+                                    .thenAccept(message -> {
+                                        message.addReaction("\uD83D\uDC4D");
+                                        message.addReaction("\uD83D\uDC4E");
+                                        message.addReactionAddListener(listener -> {
+                                            if (listener.getEmoji().equalsEmoji("\uD83D\uDC4D") && listener.getUser().get().getId() == Long.parseLong(finalUserID) && !thumbsDown.get()) {
+                                                thumbsUp.set(true);
+                                                message.edit(new EmbedBuilder()
+                                                        .setTitle("Lekkere neukseks hmmm")
+                                                        .setDescription(num1 + " * " + num2)
+                                                        .setFooter("ziek man"));
+                                                //while (!done.get()) {
+                                                    message.getChannel().addMessageCreateListener(messageCreateListener -> {
+                                                        Instant cooldown = LocalDateTime.now().plusMinutes(1).toInstant(ZoneOffset.UTC);
+                                                        if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
+                                                            if (cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()).isAfter(LocalDateTime.now().toInstant(ZoneOffset.UTC)) && !done.get()) {
+                                                                cooldowns.replace(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
+                                                            }
+                                                        } else {
+                                                            cooldowns.put(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
                                                         }
-                                                    } else {
-                                                        cooldowns.put(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
-                                                    }
-                                                    if (messageCreateListener.getMessageContent().equals(Integer.toString(num1 * num2)) && !done.get()) {
-                                                        messageCreateEvent.getChannel().sendMessage(messageCreateListener.getMessageAuthor().getName() + " took the kids. Can I at least see them at Christmas?");
-                                                        done.set(true);
-                                                    }
-                                                });
-                                            //}
-                                        } else if (listener.getEmoji().equalsEmoji("\uD83D\uDC4E") && listener.getUser().get().getId() == Long.parseLong(finalUserID)) {
-                                            message.edit(new EmbedBuilder()
-                                                    .setTitle("Jammer dan")
-                                                    .setDescription("Geen neukseks for you."));
-                                        }
+                                                        if (messageCreateListener.getMessageContent().equals(Integer.toString(num1 * num2)) && !done.get()) {
+                                                            messageCreateEvent.getChannel().sendMessage(messageCreateListener.getMessageAuthor().getName() + " took the kids. Can I at least see them at Christmas?");
+                                                            done.set(true);
+                                                            active.set(false);
+                                                        }
+                                                    });
+                                                //}
+                                            } else if (listener.getEmoji().equalsEmoji("\uD83D\uDC4E") && listener.getUser().get().getId() == Long.parseLong(finalUserID) && !thumbsUp.get()) {
+                                                message.edit(new EmbedBuilder()
+                                                        .setTitle("Jammer dan")
+                                                        .setDescription("Geen neukseks for you."));
+                                                thumbsDown.set(true);
+                                                active.set(false);
+                                            }
+                                        });
                                     });
-                                });
-                            } catch (InterruptedException | ExecutionException e) {
-                                e.printStackTrace();
+                                } catch (InterruptedException | ExecutionException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                messageCreateEvent.getChannel().sendMessage("Bro wtf fak? je kan dit letterlijk niet op jezelf doen.");
                             }
                         } else {
-                            messageCreateEvent.getChannel().sendMessage("Bro wtf fak? je kan dit letterlijk niet op jezelf doen.");
+                            messageCreateEvent.getChannel().sendMessage("Deze meneer heeft geen ChildLabourSimulator account.");
                         }
                     } else {
-                        messageCreateEvent.getChannel().sendMessage("Deze meneer heeft geen ChildLabourSimulator account.");
+                        messageCreateEvent.getChannel().sendMessage("Bro ga iemand pingen in je command dan ofzo?");
                     }
                 } else {
-                    messageCreateEvent.getChannel().sendMessage("Bro ga iemand pingen in je command dan ofzo?");
+                    Duration difference = Duration.between(LocalDateTime.now().toInstant(ZoneOffset.UTC), cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()));
+                    messageCreateEvent.getChannel().sendMessage("Bro rustig man bro, je moet nog " + difference.toHours() + " uur, "
+                            + difference.toMinutesPart() + " minuten en " + difference.toSecondsPart() + " seconden wachten.");
                 }
             } else {
-                Duration difference = Duration.between(LocalDateTime.now().toInstant(ZoneOffset.UTC), cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()));
-                messageCreateEvent.getChannel().sendMessage("Bro rustig man bro, je moet nog " + difference.toHours() + " uur, "
-                        + difference.toMinutesPart() + " minuten en " + difference.toSecondsPart() + " seconden wachten.");
+                messageCreateEvent.getChannel().sendMessage("Bro er is er letterlijk al een bezig.");
             }
         }
     }
