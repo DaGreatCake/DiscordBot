@@ -11,12 +11,14 @@ public class Child {
     private String name;
     private int miningspeed;
     private int healthpoints;
+    private int healthpointsmax;
     private String userid;
 
-    public Child(String name, int miningspeed, int healthpoints, String userid) {
+    public Child(String name, int miningspeed, int healthpointsmax, String userid) {
         this.name = name;
         this.miningspeed = miningspeed;
-        this.healthpoints = healthpoints;
+        this.healthpointsmax = healthpointsmax;
+        this.healthpoints = healthpointsmax;
         this.userid = userid;
     }
 
@@ -48,6 +50,14 @@ public class Child {
 
     public void setHealthpoints(int healthpoints) {
         this.healthpoints = healthpoints;
+    }
+
+    public int getHealthpointsmax() {
+        return healthpointsmax;
+    }
+
+    public void setHealthpointsmax(int healthpointsmax) {
+        this.healthpointsmax = healthpointsmax;
     }
 
     public String getUserid() {
