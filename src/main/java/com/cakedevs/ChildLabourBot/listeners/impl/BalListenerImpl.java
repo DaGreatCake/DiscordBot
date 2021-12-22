@@ -16,7 +16,7 @@ public class BalListenerImpl implements BalListener {
 
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
-        if(messageCreateEvent.getMessageContent().equals("+bal")) {
+        if(messageCreateEvent.getMessageContent().equalsIgnoreCase("+bal")) {
             Optional<User> userOptPrimary = userRepository.findUserById(messageCreateEvent.getMessageAuthor().getIdAsString());
             if (userOptPrimary.isPresent()) {
                 int bedrock = userOptPrimary.get().getBedrock();

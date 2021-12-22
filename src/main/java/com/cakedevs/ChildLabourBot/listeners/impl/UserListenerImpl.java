@@ -38,7 +38,7 @@ public class UserListenerImpl implements UserListener {
             messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
                     "Child Labour Initiate",
                     "Lekker man " + user.getName() + ". Nu kun je enge doekoes verdienen.",
-                    null,
+                    "Typ +help voor de commands.",
                     "https://static.wikia.nocookie.net/clashofclans/images/5/56/Miner_info.png",
                     messageCreateEvent.getChannel());
         }

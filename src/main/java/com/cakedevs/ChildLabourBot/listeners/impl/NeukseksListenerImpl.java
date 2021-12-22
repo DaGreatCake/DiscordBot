@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
@@ -57,7 +58,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
             }
         }
 
-        if(messageCreateEvent.getMessageContent().startsWith("+neukseks")) {
+        if(messageCreateEvent.getMessageContent().toLowerCase().startsWith("+neukseks")) {
             Optional<User> userOptPrimary = userRepository.findUserById(messageCreateEvent.getMessageAuthor().getIdAsString());
             if (userOptPrimary.isPresent()) {
                 if (childRepository.findChildsByUserid(messageCreateEvent.getMessageAuthor().getIdAsString()).size() < maxChilds) {

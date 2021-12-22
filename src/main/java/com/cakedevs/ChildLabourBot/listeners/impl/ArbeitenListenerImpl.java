@@ -43,7 +43,7 @@ public class ArbeitenListenerImpl implements ArbeitenListener {
             }
         }
 
-        if(messageCreateEvent.getMessageContent().equals("+arbeiten")) {
+        if(messageCreateEvent.getMessageContent().equalsIgnoreCase("+arbeiten")) {
             Optional<User> userOptPrimary = userRepository.findUserById(messageCreateEvent.getMessageAuthor().getIdAsString());
             if (userOptPrimary.isPresent()) {
                 if (allow) {
