@@ -16,7 +16,7 @@ public class HelpListenerImpl implements HelpListener {
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
         if(messageCreateEvent.getMessageContent().equalsIgnoreCase("+help")) {
-            messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
+            messagingService.sendMessage(null,
                     "Alle commands",
                     "+neukseks - Maak een kind. \n" +
                               "+arbeiten - Laat je kinderen werken. \n" +

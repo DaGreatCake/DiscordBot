@@ -21,13 +21,17 @@ public class ChildLabourBotApplication {
 	private ArbeitenListener arbeitenListener;
 
 	@Autowired
+	private BalListener balListener;
+
+	@Autowired
+	private HelpListener helpListener;
+
+	@Autowired
 	private NeukseksListener neukseksListener;
 
 	@Autowired
 	private UserListener userListener;
 
-	@Autowired
-	private BalListener balListener;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ChildLabourBotApplication.class, args);
@@ -43,9 +47,11 @@ public class ChildLabourBotApplication {
 				.join();
 
 		api.addMessageCreateListener(arbeitenListener);
+		api.addMessageCreateListener(balListener);
+		api.addMessageCreateListener(helpListener);
 		api.addMessageCreateListener(neukseksListener);
 		api.addMessageCreateListener(userListener);
-		api.addMessageCreateListener(balListener);
+
 		return api;
 	}
 }
