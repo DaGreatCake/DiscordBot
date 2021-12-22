@@ -5,8 +5,6 @@ import com.cakedevs.ChildLabourBot.entities.User;
 import com.cakedevs.ChildLabourBot.listeners.ArbeitenListener;
 import com.cakedevs.ChildLabourBot.repository.ChildRepository;
 import com.cakedevs.ChildLabourBot.repository.UserRepository;
-import com.cakedevs.ChildLabourBot.services.ChildService;
-import com.cakedevs.ChildLabourBot.services.MessagingService;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,12 +21,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Component
 public class ArbeitenListenerImpl implements ArbeitenListener {
     @Autowired
-    private MessagingService messagingService;
-
-    @Autowired
-    private ChildService childService;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -39,11 +31,11 @@ public class ArbeitenListenerImpl implements ArbeitenListener {
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
         // constraints
-        int delayInMinutes = 1;
-        int bedrockMined = 0;
+        int delayInMinutes = 30;
 
         AtomicBoolean done = new AtomicBoolean(false);
         boolean allow = true;
+        int bedrockMined = 0;
 
         if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
             if (cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()).isAfter(LocalDateTime.now().toInstant(ZoneOffset.UTC))) {
