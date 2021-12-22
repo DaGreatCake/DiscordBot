@@ -17,7 +17,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
@@ -44,7 +43,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
         // constraints
         int maxChilds = 10;
-        int delayInMinutes = 1;
+        int delayInMinutes = 240;
 
         AtomicBoolean done = new AtomicBoolean(false);
         AtomicBoolean thumbsDown = new AtomicBoolean(false);

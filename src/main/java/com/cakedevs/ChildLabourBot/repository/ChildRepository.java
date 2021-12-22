@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface ChildRepository extends CrudRepository<Child, Long> {
     Optional<Child> findChildById(long id);
     List<Child> findChildsByUserid(String userid);
+    Long deleteById(long id);
 }
