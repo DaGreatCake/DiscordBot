@@ -82,6 +82,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                 .thenAccept(message -> {
                                     message.addReaction("\uD83D\uDC4D");
                                     message.addReaction("\uD83D\uDC4E");
+                                    message.addReaction("\\u274C");
                                     message.addReactionAddListener(listener -> {
                                         if (listener.getEmoji().equalsEmoji("\uD83D\uDC4D") && listener.getUser().get().getId() == Long.parseLong(finalUserID) && !thumbsDown.get()) {
                                             thumbsUp.set(true);
@@ -105,7 +106,9 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                     }
                                                 });
                                             //}
-                                        } else if (listener.getEmoji().equalsEmoji("\uD83D\uDC4E") && listener.getUser().get().getId() == Long.parseLong(finalUserID) && !thumbsUp.get()) {
+                                        } else if ((listener.getEmoji().equalsEmoji("\uD83D\uDC4E") && listener.getUser().get().getId() == Long.parseLong(finalUserID))
+                                                    || (listener.getEmoji().equalsEmoji("\\u274C") && listener.getUserId() == messageCreateEvent.getMessageAuthor().getId())
+                                                    && !thumbsUp.get()) {
                                             message.edit(new EmbedBuilder()
                                                     .setTitle("Jammer dan")
                                                     .setDescription("Geen neukseks for you."));
