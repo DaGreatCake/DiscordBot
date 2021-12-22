@@ -18,7 +18,7 @@ public class ChildLabourBotApplication {
 
 
 	@Autowired
-	private PingListener pingListener;
+	private ArbeitenListener arbeitenListener;
 
 	@Autowired
 	private RateListener rateListener;
@@ -28,9 +28,6 @@ public class ChildLabourBotApplication {
 
 	@Autowired
 	private UserListener userListener;
-
-	@Autowired
-	private DeleteReactionListener deleteReactionListener;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ChildLabourBotApplication.class, args);
@@ -45,11 +42,10 @@ public class ChildLabourBotApplication {
 				.login()
 				.join();
 
-		api.addMessageCreateListener(pingListener);
+		api.addMessageCreateListener(arbeitenListener);
 		api.addMessageCreateListener(rateListener);
 		api.addMessageCreateListener(neukseksListener);
 		api.addMessageCreateListener(userListener);
-		//api.addReactionAddListener(deleteReactionListener);
 		return api;
 	}
 }
