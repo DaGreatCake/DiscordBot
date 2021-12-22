@@ -1,16 +1,13 @@
 package com.cakedevs.ChildLabourBot.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "child")
 public class Child {
     @Id
-    @Column
-    private int id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String name;
     private int mining_speed;
     private int healthpoints;
@@ -24,6 +21,10 @@ public class Child {
     }
 
     public Child() {}
+
+    public Long getId() {
+        return id;
+    }
 
     public String getName() {
         return name;
