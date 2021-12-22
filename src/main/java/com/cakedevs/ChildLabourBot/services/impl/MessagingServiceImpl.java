@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class MessagingServiceImpl implements MessagingService {
-
     @Autowired
     private DeleteReactionListener deleteReactionListener;
 

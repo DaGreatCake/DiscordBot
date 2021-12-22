@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class UserListenerImpl implements UserListener {
     @Autowired
     private MessagingService messagingService;
+
     @Autowired
     private UserService userService;
 
@@ -33,7 +34,7 @@ public class UserListenerImpl implements UserListener {
                 return;
             }
 
-            //If successful send a message about the great success
+            //If successful send a message about the success
             messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
                     "Child Labour Initiate",
                     "Lekker man " + user.getName() + ". Nu kun je enge doekoes verdienen.",

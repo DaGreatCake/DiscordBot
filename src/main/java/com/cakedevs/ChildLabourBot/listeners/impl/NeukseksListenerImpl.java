@@ -1,8 +1,10 @@
 package com.cakedevs.ChildLabourBot.listeners.impl;
 
+import com.cakedevs.ChildLabourBot.entities.Child;
 import com.cakedevs.ChildLabourBot.entities.User;
 import com.cakedevs.ChildLabourBot.listeners.NeukseksListener;
 import com.cakedevs.ChildLabourBot.repository.UserRepository;
+import com.cakedevs.ChildLabourBot.services.ChildService;
 import com.cakedevs.ChildLabourBot.services.MessagingService;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.event.message.MessageCreateEvent;
@@ -21,9 +23,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component
 public class NeukseksListenerImpl implements NeukseksListener {
-
     @Autowired
     private MessagingService messagingService;
+
+    @Autowired
+    private ChildService childService;
 
     @Autowired
     private UserRepository userRepository;
@@ -35,7 +39,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
         AtomicBoolean done = new AtomicBoolean(false);
         AtomicBoolean thumbsDown = new AtomicBoolean(false);
         AtomicBoolean thumbsUp = new AtomicBoolean(false);
-        AtomicBoolean active = new AtomicBoolean(false);
+        AtomicBoolean childCreated = new AtomicBoolean(false);
         boolean allow = true;
 
         if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
@@ -91,7 +95,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                     .setDescription(num1 + " * " + num2)
                                                     .setFooter("ziek man"));
                                             //while (!done.get()) {
-                                                message.getChannel().addMessageCreateListener(messageCreateListener -> {
+                                                message.getChannel().addMessageCreateListener(answerListener -> {
                                                     Instant cooldown = LocalDateTime.now().plusMinutes(1).toInstant(ZoneOffset.UTC);
                                                     if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
                                                         if (cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()).isAfter(LocalDateTime.now().toInstant(ZoneOffset.UTC)) && !done.get()) {
@@ -100,9 +104,31 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                     } else {
                                                         cooldowns.put(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
                                                     }
-                                                    if (messageCreateListener.getMessageContent().equals(Integer.toString(num1 * num2)) && !done.get()) {
-                                                        messageCreateEvent.getChannel().sendMessage(messageCreateListener.getMessageAuthor().getName() + " took the kids. Can I at least see them at Christmas?");
+                                                    if (answerListener.getMessageContent().equals(Integer.toString(num1 * num2)) && !done.get()) {
                                                         done.set(true);
+                                                        messageCreateEvent.getChannel().sendMessage(answerListener.getMessageAuthor().getName() + " took the kids. Can I at least see them at Christmas?");
+                                                        messageCreateEvent.getChannel().addMessageCreateListener(childNameListener -> {
+                                                            if (childNameListener.getMessageAuthor().getId() == answerListener.getMessageAuthor().getId() && !childCreated.get()) {
+                                                                childCreated.set(true);
+                                                                Child child;
+                                                                String name = answerListener.getMessage().getContent();
+                                                                int miningSpeed = r.nextInt(10);
+                                                                int superChance = r.nextInt(10);
+                                                                int healthPoints = r.nextInt(100);
+                                                                if (superChance == 2) {
+                                                                    healthPoints *= 5;
+                                                                }
+                                                                String user_id = answerListener.getMessageAuthor().getIdAsString();
+                                                                child = childService.createChild(name, miningSpeed, healthPoints, user_id);
+
+                                                                messagingService.sendMessage(answerListener.getMessageAuthor(),
+                                                                        "Holy shit " + name + " is geboren.",
+                                                                        name + "heeft een mining speed van " + miningSpeed + " en " + healthPoints + " hitpoints.",
+                                                                        null,
+                                                                        "https://c.tenor.com/pY0cFgRIs4wAAAAC/jip-baby.gif",
+                                                                        answerListener.getChannel());
+                                                            }
+                                                        });
                                                     }
                                                 });
                                             //}

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SpeakListenerImpl implements SpeakListener {
-
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
         if(messageCreateEvent.getMessageContent().equals("monke!speak")) {

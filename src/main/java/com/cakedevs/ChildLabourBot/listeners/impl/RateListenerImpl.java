@@ -19,6 +19,7 @@ public class RateListenerImpl implements RateListener {
 
     @Autowired
     private MessagingService messagingService;
+
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
         if(messageCreateEvent.getMessageContent().startsWith("!rate")) {
