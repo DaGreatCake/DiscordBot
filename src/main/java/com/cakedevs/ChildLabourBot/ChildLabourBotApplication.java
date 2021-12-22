@@ -16,7 +16,6 @@ public class ChildLabourBotApplication {
 	@Autowired
 	private Environment env;
 
-
 	@Autowired
 	private ArbeitenListener arbeitenListener;
 
