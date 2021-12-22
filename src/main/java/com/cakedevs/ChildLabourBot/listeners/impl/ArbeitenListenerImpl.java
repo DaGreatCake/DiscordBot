@@ -7,7 +7,6 @@ import com.cakedevs.ChildLabourBot.repository.ChildRepository;
 import com.cakedevs.ChildLabourBot.repository.UserRepository;
 import com.cakedevs.ChildLabourBot.services.ChildService;
 import com.cakedevs.ChildLabourBot.services.MessagingService;
-import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,9 +18,6 @@ import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component
@@ -76,12 +72,13 @@ public class ArbeitenListenerImpl implements ArbeitenListener {
                             bedrockMined += child.getMiningspeed();
                         }
 
-                        messageCreateEvent.getChannel().sendMessage("Lekker man, je kinderen hebben " + bedrockMined + " bedrock gemined.");
                         userOptPrimary.get().setBedrock(userOptPrimary.get().getBedrock() + bedrockMined);
-                        messageCreateEvent.getChannel().sendMessage("Je hebt nu " + userOptPrimary.get().getBedrock() + " bedrock.");
+                        User user = userRepository.save(userOptPrimary.get());
+                        messageCreateEvent.getChannel().sendMessage("Lekker man, je kinderen hebben " + bedrockMined + " bedrock gemined.");
+                        messageCreateEvent.getChannel().sendMessage("Je hebt nu " + user.getBedrock() + " bedrock.");
 
                     } else {
-                        messageCreateEvent.getChannel().sendMessage("Gast je kan niemand laten werken als je geen kindslaven hebt. Doe eerst +neukseks");
+                        messageCreateEvent.getChannel().sendMessage("Gast je kan niemand laten werken als je geen kindslaven hebt.\nDoe eerst +neukseks");
                     }
                 } else {
                     Duration difference = Duration.between(LocalDateTime.now().toInstant(ZoneOffset.UTC), cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()));
