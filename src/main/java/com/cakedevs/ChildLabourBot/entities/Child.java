@@ -9,15 +9,15 @@ public class Child {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    private int mining_speed;
+    private int miningspeed;
     private int healthpoints;
-    private String user_id;
+    private String userid;
 
-    public Child(String name, int mining_speed, int healthpoints, String user_id) {
+    public Child(String name, int miningspeed, int healthpoints, String userid) {
         this.name = name;
-        this.mining_speed = mining_speed;
+        this.miningspeed = miningspeed;
         this.healthpoints = healthpoints;
-        this.user_id = user_id;
+        this.userid = userid;
     }
 
     public Child() {}
@@ -34,12 +34,12 @@ public class Child {
         this.name = name;
     }
 
-    public int getMining_speed() {
-        return mining_speed;
+    public int getMiningspeed() {
+        return miningspeed;
     }
 
-    public void setMining_speed(int mining_speed) {
-        this.mining_speed = mining_speed;
+    public void setMiningspeed(int miningspeed) {
+        this.miningspeed = miningspeed;
     }
 
     public int getHealthpoints() {
@@ -50,11 +50,11 @@ public class Child {
         this.healthpoints = healthpoints;
     }
 
-    public String getUser_id() {
-        return user_id;
+    public String getUserid() {
+        return userid;
     }
 
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 }
