@@ -94,46 +94,43 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                     .setTitle("Lekkere neukseks hmmm")
                                                     .setDescription(num1 + " * " + num2)
                                                     .setFooter("ziek man"));
-                                            //while (!done.get()) {
-                                                message.getChannel().addMessageCreateListener(answerListener -> {
-                                                    Instant cooldown = LocalDateTime.now().plusMinutes(1).toInstant(ZoneOffset.UTC);
-                                                    if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
-                                                        if (cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()).isAfter(LocalDateTime.now().toInstant(ZoneOffset.UTC)) && !done.get()) {
-                                                            cooldowns.replace(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
-                                                        }
-                                                    } else {
-                                                        cooldowns.put(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
+                                            message.getChannel().addMessageCreateListener(answerListener -> {
+                                                Instant cooldown = LocalDateTime.now().plusMinutes(1).toInstant(ZoneOffset.UTC);
+                                                if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
+                                                    if (cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()).isAfter(LocalDateTime.now().toInstant(ZoneOffset.UTC)) && !done.get()) {
+                                                        cooldowns.replace(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
                                                     }
-                                                    if (answerListener.getMessageContent().equals(Integer.toString(num1 * num2)) && !done.get()) {
-                                                        done.set(true);
-                                                        messageCreateEvent.getChannel().sendMessage(answerListener.getMessageAuthor().getName() + " took the kids. Can I at least see them at Christmas?");
-                                                        messageCreateEvent.getChannel().sendMessage("Hoe mag het strontjong gaan heten?");
-                                                        messageCreateEvent.getChannel().addMessageCreateListener(childNameListener -> {
-                                                            if (childNameListener.getMessageAuthor().getId() == answerListener.getMessageAuthor().getId() && !childCreated.get()) {
-                                                                messageCreateEvent.getChannel().sendMessage("testerino");
-                                                                childCreated.set(true);
-                                                                Child child;
-                                                                String name = answerListener.getMessage().getContent();
-                                                                int miningSpeed = r.nextInt(10);
-                                                                int superChance = r.nextInt(10);
-                                                                int healthPoints = r.nextInt(100);
-                                                                if (superChance == 2) {
-                                                                    healthPoints *= 5;
-                                                                }
-                                                                String user_id = answerListener.getMessageAuthor().getIdAsString();
-                                                                child = childService.createChild(name, miningSpeed, healthPoints, user_id);
-
-                                                                messagingService.sendMessage(answerListener.getMessageAuthor(),
-                                                                        "Holy shit " + name + " is geboren.",
-                                                                        name + "heeft een mining speed van " + miningSpeed + " en " + healthPoints + " hitpoints.",
-                                                                        null,
-                                                                        "https://c.tenor.com/pY0cFgRIs4wAAAAC/jip-baby.gif",
-                                                                        answerListener.getChannel());
+                                                } else {
+                                                    cooldowns.put(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
+                                                }
+                                                if (answerListener.getMessageContent().equals(Integer.toString(num1 * num2)) && !done.get()) {
+                                                    done.set(true);
+                                                    messageCreateEvent.getChannel().sendMessage(answerListener.getMessageAuthor().getName() + " took the kids. Can I at least see them at Christmas?");
+                                                    messageCreateEvent.getChannel().sendMessage("Hoe mag het strontjong gaan heten?");
+                                                    messageCreateEvent.getChannel().addMessageCreateListener(childNameListener -> {
+                                                        if (childNameListener.getMessageAuthor().getId() == answerListener.getMessageAuthor().getId() && !childCreated.get()) {
+                                                            childCreated.set(true);
+                                                            Child child;
+                                                            String name = answerListener.getMessage().getContent();
+                                                            int miningSpeed = r.nextInt(10);
+                                                            int superChance = r.nextInt(10);
+                                                            int healthPoints = r.nextInt(100);
+                                                            if (superChance == 2) {
+                                                                healthPoints *= 5;
                                                             }
-                                                        });
-                                                    }
-                                                });
-                                            //}
+                                                            String user_id = answerListener.getMessageAuthor().getIdAsString();
+                                                            child = childService.createChild(name, miningSpeed, healthPoints, user_id);
+
+                                                            messagingService.sendMessage(answerListener.getMessageAuthor(),
+                                                                    "Holy shit " + name + " is geboren.",
+                                                                    name + "heeft een mining speed van " + miningSpeed + " en " + healthPoints + " hitpoints.",
+                                                                    null,
+                                                                    "https://c.tenor.com/pY0cFgRIs4wAAAAC/jip-baby.gif",
+                                                                    answerListener.getChannel());
+                                                        }
+                                                    });
+                                                }
+                                            });
                                         } else if ((listener.getEmoji().equalsEmoji("\uD83D\uDC4E") && listener.getUser().get().getId() == Long.parseLong(finalUserID))
                                                     || (listener.getEmoji().equalsEmoji("\u274C") && listener.getUserId() == messageCreateEvent.getMessageAuthor().getId())
                                                     && !thumbsUp.get()) {
