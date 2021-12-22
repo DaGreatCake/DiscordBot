@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -49,7 +50,7 @@ public class MurderListenerImpl implements MurderListener {
             }
         }
 
-        if(messageCreateEvent.getMessageContent().equalsIgnoreCase("+murder")) {
+        if(messageCreateEvent.getMessageContent().toLowerCase(Locale.ROOT).startsWith("+murder")) {
             Optional<User> userOptPrimary = userRepository.findUserById(messageCreateEvent.getMessageAuthor().getIdAsString());
             if (userOptPrimary.isPresent()) {
                 if (allow) {
