@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name = "child")
 public class Child {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private int miningspeed;
