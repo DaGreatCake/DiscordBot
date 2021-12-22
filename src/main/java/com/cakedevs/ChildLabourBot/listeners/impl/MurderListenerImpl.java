@@ -101,6 +101,7 @@ public class MurderListenerImpl implements MurderListener {
                                                 null,
                                                 messageCreateEvent.getChannel());
 
+                                        String finalUserChildChoose = userChildChoose;
                                         messageCreateEvent.getChannel().addMessageCreateListener(enemyChooseListener -> {
                                             if (enemyChooseListener.getMessageAuthor().getId() == messageCreateEvent.getMessageAuthor().getId() && !victimChosen.get()) {
                                                 long id;
@@ -120,57 +121,66 @@ public class MurderListenerImpl implements MurderListener {
                                                 }
                                             }
 
-                                            messageCreateEvent.getChannel().addMessageCreateListener(attackerChooseListener -> {
-                                                if (attackerChooseListener.getMessageAuthor().getId() == messageCreateEvent.getMessageAuthor().getId() && victimChosen.get() && !attackerChosen.get()) {
-                                                    long id;
-                                                    try {
-                                                        id = Long.parseLong(attackerChooseListener.getMessageContent());
-                                                        for (Child child : userChilds) {
-                                                            if (child.getId() == id) {
-                                                                attackerChild.set(child);
-                                                                attackerChosen.set(true);
+                                            if (victimChosen.get()) {
+                                                messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
+                                                        "Kies een child id die het gekozen kind aan gaat vallen",
+                                                        finalUserChildChoose,
+                                                        null,
+                                                        null,
+                                                        messageCreateEvent.getChannel());
+
+                                                messageCreateEvent.getChannel().addMessageCreateListener(attackerChooseListener -> {
+                                                    if (attackerChooseListener.getMessageAuthor().getId() == messageCreateEvent.getMessageAuthor().getId() && !attackerChosen.get()) {
+                                                        long id;
+                                                        try {
+                                                            id = Long.parseLong(attackerChooseListener.getMessageContent());
+                                                            for (Child child : userChilds) {
+                                                                if (child.getId() == id) {
+                                                                    attackerChild.set(child);
+                                                                    attackerChosen.set(true);
+                                                                }
                                                             }
+                                                            if (attackerChild == null) {
+                                                                messageCreateEvent.getChannel().sendMessage("Bro die bestaat niet.");
+                                                            }
+                                                        } catch (NumberFormatException ex) {
+                                                            messageCreateEvent.getChannel().sendMessage("Bro dat is letterlijk geen getal.");
                                                         }
-                                                        if (attackerChild == null) {
-                                                            messageCreateEvent.getChannel().sendMessage("Bro die bestaat niet.");
+                                                    }
+
+                                                    if (victimChild != null && attackerChild != null) {
+                                                        int victimHealthpoints = victimChild.get().getHealthpoints();
+                                                        int attackerHealthpoints = attackerChild.get().getHealthpoints();
+
+                                                        if (attackerHealthpoints > victimHealthpoints) {
+                                                            attackerHealthpoints -= victimHealthpoints;
+
+                                                            messageCreateEvent.getChannel().sendMessage("Holy shit " + attackerChild.get().getName()
+                                                                    + " heeft " + victimChild.get().getName() + " vermoord." + "\n"
+                                                                    + attackerChild.get().getName() + " heeft nu " + attackerHealthpoints + " hitpoints.");
+
+                                                            attackerChild.get().setHealthpoints(attackerHealthpoints);
+                                                            Child child = childRepository.save(attackerChild.get());
+                                                            childRepository.deleteById(victimChild.get().getId());
+                                                        } else if (attackerHealthpoints < victimHealthpoints) {
+                                                            victimHealthpoints -= attackerHealthpoints;
+
+                                                            messageCreateEvent.getChannel().sendMessage("Dit waren niet genoeg hitpoints om " + victimChild.get().getName()
+                                                                    + " te vermoorden. \n" + attackerChild.get().getName() + " is zelf dood. \n"
+                                                                    + victimChild.get().getName() + " heeft nu " + victimHealthpoints + " hitpoints.");
+
+                                                            victimChild.get().setHealthpoints(victimHealthpoints);
+                                                            Child child = childRepository.save(victimChild.get());
+                                                            childRepository.deleteById(attackerChild.get().getId());
+                                                        } else if (attackerHealthpoints == victimHealthpoints) {
+                                                            messageCreateEvent.getChannel().sendMessage("Ze waren erg gewaagd aan elkaar.\nAls resultaat zijn beide kinderen dood.");
+
+                                                            childRepository.deleteById(victimChild.get().getId());
+                                                            childRepository.deleteById(attackerChild.get().getId());
                                                         }
-                                                    } catch (NumberFormatException ex) {
-                                                        messageCreateEvent.getChannel().sendMessage("Bro dat is letterlijk geen getal.");
                                                     }
-                                                }
-
-                                                if (victimChild != null && attackerChild != null) {
-                                                    int victimHealthpoints = victimChild.get().getHealthpoints();
-                                                    int attackerHealthpoints = attackerChild.get().getHealthpoints();
-
-                                                    if (attackerHealthpoints > victimHealthpoints) {
-                                                        attackerHealthpoints -= victimHealthpoints;
-
-                                                        messageCreateEvent.getChannel().sendMessage("Holy shit " + attackerChild.get().getName()
-                                                                + " heeft " + victimChild.get().getName() + " vermoord." + "\n"
-                                                                + attackerChild.get().getName() + " heeft nu " + attackerHealthpoints + " hitpoints.");
-
-                                                        attackerChild.get().setHealthpoints(attackerHealthpoints);
-                                                        Child child = childRepository.save(attackerChild.get());
-                                                        childRepository.deleteById(victimChild.get().getId());
-                                                    } else if (attackerHealthpoints < victimHealthpoints) {
-                                                        victimHealthpoints -= attackerHealthpoints;
-
-                                                        messageCreateEvent.getChannel().sendMessage("Dit waren niet genoeg hitpoints om " + victimChild.get().getName()
-                                                                + " te vermoorden. \n" + attackerChild.get().getName() + " is zelf dood. \n"
-                                                                + victimChild.get().getName() + " heeft nu " + victimHealthpoints + " hitpoints.");
-
-                                                        victimChild.get().setHealthpoints(victimHealthpoints);
-                                                        Child child = childRepository.save(victimChild.get());
-                                                        childRepository.deleteById(attackerChild.get().getId());
-                                                    } else if (attackerHealthpoints == victimHealthpoints) {
-                                                        messageCreateEvent.getChannel().sendMessage("Ze waren erg gewaagd aan elkaar.\nAls resultaat zijn beide kinderen dood.");
-
-                                                        childRepository.deleteById(victimChild.get().getId());
-                                                        childRepository.deleteById(attackerChild.get().getId());
-                                                    }
-                                                }
-                                            });
+                                                });
+                                            }
                                         });
                                     } else {
                                         messageCreateEvent.getChannel().sendMessage("Bro je bent letterlijk noob, ga eerst neukseksen ofzo");
