@@ -135,7 +135,8 @@ public class KidnapListenerImpl implements KidnapListener {
 
                                                     messageCreateEvent.getChannel().sendMessage("Je hebt nog " + userOptPrimary.get().getBedrock() + " bedrock.");
                                                 } else {
-                                                    messageCreateEvent.getChannel().sendMessage("Bro letterlijk te weinig bedrock noob.");
+                                                    messageCreateEvent.getChannel().sendMessage("Bro je hebt letterlijk te weinig bedrock noob.");
+                                                    cooldowns.replace(messageCreateEvent.getMessageAuthor().getIdAsString(), LocalDateTime.now().toInstant(ZoneOffset.UTC));
                                                 }
                                             }
                                         }
