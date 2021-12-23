@@ -2,9 +2,10 @@ package com.cakedevs.ChildLabourBot.listeners.impl;
 
 import com.cakedevs.ChildLabourBot.entities.Child;
 import com.cakedevs.ChildLabourBot.entities.User;
-import com.cakedevs.ChildLabourBot.listeners.ArbeitenListener;
+import com.cakedevs.ChildLabourBot.listeners.HealListener;
 import com.cakedevs.ChildLabourBot.repository.ChildRepository;
 import com.cakedevs.ChildLabourBot.repository.UserRepository;
+import com.cakedevs.ChildLabourBot.services.MessagingService;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,9 +18,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Component
-public class ArbeitenListenerImpl implements ArbeitenListener {
+public class HealListenerImpl implements HealListener {
+    @Autowired
+    private MessagingService messagingService;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -31,11 +36,10 @@ public class ArbeitenListenerImpl implements ArbeitenListener {
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
         // constraints
-        int delayInMinutes = 15;
+        int delayInMinutes = 1;
 
         AtomicBoolean done = new AtomicBoolean(false);
         boolean allow = true;
-        int bedrockMined = 0;
 
         if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
             if (cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()).isAfter(LocalDateTime.now().toInstant(ZoneOffset.UTC))) {
@@ -43,7 +47,7 @@ public class ArbeitenListenerImpl implements ArbeitenListener {
             }
         }
 
-        if(messageCreateEvent.getMessageContent().equalsIgnoreCase("+arbeiten")) {
+        if(messageCreateEvent.getMessageContent().equalsIgnoreCase("+heal")) {
             Optional<User> userOptPrimary = userRepository.findUserById(messageCreateEvent.getMessageAuthor().getIdAsString());
             if (userOptPrimary.isPresent()) {
                 if (allow) {
@@ -59,18 +63,54 @@ public class ArbeitenListenerImpl implements ArbeitenListener {
                             cooldowns.put(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
                         }
 
-                        done.set(true);
+                        String childChoose = "";
+
                         for (Child child : userChilds) {
-                            bedrockMined += child.getMiningspeed();
+                            childChoose += "Id: " + child.getId() + ", name: " + child.getName() + ", mining speed: "
+                                    + child.getMiningspeed() + ", hitpoints: " + child.getHealthpoints() + "\n";
                         }
 
-                        userOptPrimary.get().setBedrock(userOptPrimary.get().getBedrock() + bedrockMined);
-                        User user = userRepository.save(userOptPrimary.get());
-                        messageCreateEvent.getChannel().sendMessage("Lekker man, je kinderen hebben " + bedrockMined + " bedrock gemined.");
-                        messageCreateEvent.getChannel().sendMessage("Je hebt nu " + user.getBedrock() + " bedrock.");
+                        messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
+                                "Kies een child id om te healen",
+                                childChoose,
+                                null,
+                                null,
+                                messageCreateEvent.getChannel());
 
+                        AtomicLong childId = new AtomicLong(-1);
+
+                        messageCreateEvent.getChannel().addMessageCreateListener(chooseListener -> {
+                            if (chooseListener.getMessageAuthor().getId() == messageCreateEvent.getMessageAuthor().getId() && !done.get()) {
+                                long id;
+                                try {
+                                    id = Long.parseLong(chooseListener.getMessageContent());
+                                    for (Child child : userChilds) {
+                                        if (child.getId() == id) {
+                                            childId.set(id);
+                                            done.set(true);
+                                        }
+                                    }
+                                    if (!done.get()) {
+                                        messageCreateEvent.getChannel().sendMessage("Bro die bestaat niet.");
+                                    }
+                                } catch (NumberFormatException ex) {
+                                    messageCreateEvent.getChannel().sendMessage("Bro dat is letterlijk geen getal.");
+                                }
+                            }
+
+                            if (done.get()) {
+                                Optional<Child> childOpt = childRepository.findChildById(childId.get());
+                                if (childOpt.isPresent()) {
+                                    childOpt.get().setHealthpoints(childOpt.get().getHealthpointsmax());
+                                    Child child = childRepository.save(childOpt.get());
+
+                                    messageCreateEvent.getChannel().sendMessage(child.getName() + " vindt je heel lief.\nHij heeft nu "
+                                            + child.getHealthpoints() + " hitpoints.");
+                                }
+                            }
+                        });
                     } else {
-                        messageCreateEvent.getChannel().sendMessage("Gast je kan niemand laten werken als je geen kindslaven hebt.\nDoe eerst +neukseks");
+                        messageCreateEvent.getChannel().sendMessage("Gast je kan niemand healen als je geen kinderen hebt.\nDoe eerst +neukseks");
                     }
                 } else {
                     Duration difference = Duration.between(LocalDateTime.now().toInstant(ZoneOffset.UTC), cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()));

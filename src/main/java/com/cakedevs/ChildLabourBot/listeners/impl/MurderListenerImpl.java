@@ -20,7 +20,6 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class MurderListenerImpl implements MurderListener {
@@ -38,7 +37,7 @@ public class MurderListenerImpl implements MurderListener {
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
         // constraints
-        int delayInMinutes = 1;
+        int delayInMinutes = 60;
 
         AtomicBoolean victimChosen = new AtomicBoolean(false);
         AtomicBoolean attackerChosen = new AtomicBoolean(false);
