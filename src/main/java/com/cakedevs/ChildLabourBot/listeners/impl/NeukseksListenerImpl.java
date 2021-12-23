@@ -125,6 +125,9 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                                         childCreated.set(true);
                                                                         Child child;
                                                                         String name = childNameListener.getMessageContent();
+                                                                        if (name.length() > 40) {
+                                                                            name = name.substring(0, 39);
+                                                                        }
                                                                         int miningSpeed = r.nextInt(10);
                                                                         int superChance = r.nextInt(10);
                                                                         int healthPoints = r.nextInt(100);
