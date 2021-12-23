@@ -67,7 +67,7 @@ public class BuyListenerImpl implements BuyListener {
     //                }
 
                     messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
-                            "+buy [id] [aantal].",
+                            "+buy [id] [aantal]",
                             shopOptions,
                             null,
                             null,
@@ -90,7 +90,7 @@ public class BuyListenerImpl implements BuyListener {
                         } else if (item.equals("max")) {
                             int cost = 0;
                             userMaxChildUpgradePrice = upgrades.get().getMaxchildsupgrade() * maxChildUpgradePrice;
-                            for (int i = upgrades.get().getMaxchildsupgrade(); i <= upgrades.get().getMaxchildsupgrade() + amount; i++) {
+                            for (int i = upgrades.get().getMaxchildsupgrade(); i <= upgrades.get().getMaxchildsupgrade() + amount - 1; i++) {
                                 cost += i * 1000;
                             }
 
@@ -147,13 +147,13 @@ public class BuyListenerImpl implements BuyListener {
 
                                         Optional<Child> childOpt = childRepository.findChildById(childId.get());
                                         if (childOpt.isPresent()) {
-                                            userOptPrimary.get().setBedrock(userOptPrimary.get().getBedrock() - speedUpgradePrice);
+                                            userOptPrimary.get().setBedrock(userOptPrimary.get().getBedrock() - speedUpgradePrice * amount);
                                             User userSave = userRepository.save(userOptPrimary.get());
                                             childOpt.get().setMiningspeed(childOpt.get().getMiningspeed() + 1);
                                             Child child = childRepository.save(childOpt.get());
 
                                             messageCreateEvent.getChannel().sendMessage(child.getName() + " werkt nu bonkie hard.\nHij heeft nu "
-                                                    + child.getMiningspeed() + " mining speed.");
+                                                    + child.getMiningspeed() + " mining speed.\nJij beschikt nog over " + userOptPrimary.get().getBedrock() + " bedrock.");
                                         }
                                     }
                                 }).removeAfter(30, TimeUnit.SECONDS);
