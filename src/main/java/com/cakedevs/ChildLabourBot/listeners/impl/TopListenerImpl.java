@@ -35,7 +35,11 @@ public class TopListenerImpl implements TopListener {
                 Collections.sort(userList, new UserStatusComparator());
 
                 String topList = "";
-                for (int i = 1; i <= 5; i++) {
+                int maxIndex = 5;
+                if (userList.size() < 5) {
+                    maxIndex = userList.size();
+                }
+                for (int i = 1; i <= maxIndex; i++) {
                     topList += i + ". " + userList.get(userList.size() - i).getName() + ", status: " +  userList.get(userList.size() - i).getStatus() + "\n";
                 }
 
