@@ -43,6 +43,7 @@ public class MurderListenerImpl implements MurderListener {
         AtomicBoolean victimChosen = new AtomicBoolean(false);
         AtomicBoolean attackerChosen = new AtomicBoolean(false);
         AtomicBoolean done = new AtomicBoolean(false);
+        AtomicBoolean doneInside = new AtomicBoolean(false);
         boolean allow = true;
 
         if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
@@ -122,7 +123,8 @@ public class MurderListenerImpl implements MurderListener {
                                                 }
                                             }
 
-                                            if (victimChosen.get()) {
+                                            if (victimChosen.get() && !doneInside.get()) {
+                                                doneInside.set(true);
                                                 messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
                                                         "Kies een child id die de moordpoging doet",
                                                         finalUserChildChoose,
