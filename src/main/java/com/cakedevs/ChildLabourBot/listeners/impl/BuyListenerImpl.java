@@ -8,16 +8,10 @@ import com.cakedevs.ChildLabourBot.repository.ChildRepository;
 import com.cakedevs.ChildLabourBot.repository.UpgradesRepository;
 import com.cakedevs.ChildLabourBot.repository.UserRepository;
 import com.cakedevs.ChildLabourBot.services.MessagingService;
-import com.cakedevs.ChildLabourBot.services.UpgradesService;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -105,7 +99,7 @@ public class BuyListenerImpl implements BuyListener {
                                     User userSave = userRepository.save(userOptPrimary.get());
                                     Upgrades upgradesSave = upgradesRepository.save(upgrades.get());
                                     messageCreateEvent.getChannel().sendMessage("Ziek man je hebt " + amount + " extra kinderslots gekocht.\n"
-                                            + "Je kan nu " + upgrades.get().getMaxchildsupgrade() + 9 + " kinderen hebben.\n"
+                                            + "Je kan nu " + (upgrades.get().getMaxchildsupgrade() + 9) + " kinderen hebben.\n"
                                             + "Je hebt nog " + userOptPrimary.get().getBedrock() + " bedrock.");
                                 } else {
                                     messageCreateEvent.getChannel().sendMessage("Bro je hebt te weinig bedrock. Laat je kinderen harder werken.");
@@ -158,7 +152,7 @@ public class BuyListenerImpl implements BuyListener {
                                             if (childOpt.isPresent()) {
                                                 userOptPrimary.get().setBedrock(userOptPrimary.get().getBedrock() - speedUpgradePrice * amount);
                                                 User userSave = userRepository.save(userOptPrimary.get());
-                                                childOpt.get().setMiningspeed(childOpt.get().getMiningspeed() + 1);
+                                                childOpt.get().setMiningspeed(childOpt.get().getMiningspeed() + amount);
                                                 Child child = childRepository.save(childOpt.get());
 
                                                 messageCreateEvent.getChannel().sendMessage(child.getName() + " werkt nu bonkie hard.\nHij heeft nu "
