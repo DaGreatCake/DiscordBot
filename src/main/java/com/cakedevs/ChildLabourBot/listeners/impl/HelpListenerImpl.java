@@ -19,11 +19,14 @@ public class HelpListenerImpl implements HelpListener {
                     "Alle commands",
                     "+arbeiten - Laat je kinderen werken. \n" +
                             "+bal - Check hoeveel moneys je hebt. \n" +
+                            "+buy - Koop een upgrade of status. \n" +
                             "+heal - Heal een kind tot full hitpoints. \n" +
                             "+listchilds - Laat al je kinderen zien. \n" +
                             "+merge - Merge 2 kinderen voor 150% van hun hp. \n" +
                             "+murder - Doe een poging tot moord.\n" +
-                            "+neukseks - Maak een kind.",
+                            "+neukseks - Maak een kind.\n" +
+                            "+status - Laat je eigen status zien.\n" +
+                            "+top - Laat de status leaderboard zien.",
                     null,
                     null,
                     messageCreateEvent.getChannel());

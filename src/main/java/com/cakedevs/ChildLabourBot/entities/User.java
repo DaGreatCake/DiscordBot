@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Comparator;
 
 @Entity
 @Table(name = "user")
@@ -13,11 +14,13 @@ public class User {
     private String id;
     private String name;
     private int bedrock;
+    private int status;
 
     public User(String id, String name) {
         this.id = id;
         this.name = name;
         bedrock = 0;
+        status = 0;
     }
 
     public User() {}
@@ -44,5 +47,13 @@ public class User {
 
     public void setBedrock(int bedrock) {
         this.bedrock = bedrock;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

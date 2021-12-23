@@ -43,7 +43,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
         // constraints
         int maxChilds = 10;
-        int delayInMinutes = 120;
+        int delayInMinutes = 60;
         int loserBedrockGiven = 200;
 
         AtomicBoolean done = new AtomicBoolean(false);

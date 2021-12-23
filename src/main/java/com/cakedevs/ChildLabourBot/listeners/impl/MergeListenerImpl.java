@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -37,7 +36,7 @@ public class MergeListenerImpl implements MergeListener {
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
         // constraints
-        int delayInMinutes = 1;
+        int delayInMinutes = 360;
 
         AtomicBoolean child1chosen = new AtomicBoolean(false);
         AtomicBoolean child2chosen = new AtomicBoolean(false);
@@ -152,8 +151,8 @@ public class MergeListenerImpl implements MergeListener {
                                         childRepository.deleteById(child2.get().getId());
 
                                         messageCreateEvent.getChannel().sendMessage("Holy shit " + child1.get().getName()
-                                                + " heeft nu " + child1.get().getHealthpointsmax() + " max hitpoints.\nHij bezit op het moment over"
-                                                + child1.get().getHealthpoints() + " healthpoints.\nHelaas is " + child2.get().getName() + " hierbij overleden.");
+                                                + " heeft nu " + child1.get().getHealthpointsmax() + " max hitpoints.\nHij bezit op het moment over "
+                                                + child1.get().getHealthpoints() + " hitpoints.\nHelaas is " + child2.get().getName() + " hierbij overleden.");
                                     }
                                 });
                             }
