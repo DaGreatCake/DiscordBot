@@ -36,7 +36,7 @@ public class HealListenerImpl implements HealListener {
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
         // constraints
-        int delayInMinutes = 1;
+        int delayInMinutes = 180;
 
         AtomicBoolean done = new AtomicBoolean(false);
         AtomicBoolean doneInside = new AtomicBoolean(false);

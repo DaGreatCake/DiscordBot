@@ -19,6 +19,7 @@ public class HelpListenerImpl implements HelpListener {
                     "Alle commands",
                     "+arbeiten - Laat je kinderen werken. \n" +
                             "+bal - Check hoeveel moneys je hebt. \n" +
+                            "+heal - Heal een kind tot full hitpoints. \n" +
                             "+neukseks - Maak een kind. \n" +
                             "+murder - Doe een poging tot moord.",
                     null,
