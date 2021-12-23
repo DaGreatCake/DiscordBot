@@ -31,7 +31,7 @@ public class TopListenerImpl implements TopListener {
         if(messageCreateEvent.getMessageContent().equalsIgnoreCase("+top")) {
             Optional<User> userOptPrimary = userRepository.findUserById(messageCreateEvent.getMessageAuthor().getIdAsString());
             if (userOptPrimary.isPresent()) {
-                List<User> userList = entityManager.createQuery("SELECT e FROM user e").getResultList();
+                List<User> userList = entityManager.createQuery("SELECT e FROM User e").getResultList();
                 Collections.sort(userList, new UserStatusComparator());
 
                 String topList = "";
