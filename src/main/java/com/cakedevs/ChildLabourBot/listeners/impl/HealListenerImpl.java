@@ -39,6 +39,7 @@ public class HealListenerImpl implements HealListener {
         int delayInMinutes = 1;
 
         AtomicBoolean done = new AtomicBoolean(false);
+        AtomicBoolean doneInside = new AtomicBoolean(false);
         boolean allow = true;
 
         if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
@@ -67,7 +68,7 @@ public class HealListenerImpl implements HealListener {
 
                         for (Child child : userChilds) {
                             childChoose += "Id: " + child.getId() + ", name: " + child.getName() + ", mining speed: "
-                                    + child.getMiningspeed() + ", hitpoints: " + child.getHealthpoints() + "\n";
+                                    + child.getMiningspeed() + ", hitpoints: " + child.getHealthpoints() + ", max hitpoints: " + child.getHealthpointsmax() + "\n";
                         }
 
                         messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
@@ -98,7 +99,9 @@ public class HealListenerImpl implements HealListener {
                                 }
                             }
 
-                            if (done.get()) {
+                            if (done.get() && !doneInside.get()) {
+                                doneInside.set(true);
+
                                 Optional<Child> childOpt = childRepository.findChildById(childId.get());
                                 if (childOpt.isPresent()) {
                                     childOpt.get().setHealthpoints(childOpt.get().getHealthpointsmax());
