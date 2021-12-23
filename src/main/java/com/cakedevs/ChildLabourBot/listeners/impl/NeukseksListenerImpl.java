@@ -1,9 +1,11 @@
 package com.cakedevs.ChildLabourBot.listeners.impl;
 
 import com.cakedevs.ChildLabourBot.entities.Child;
+import com.cakedevs.ChildLabourBot.entities.Upgrades;
 import com.cakedevs.ChildLabourBot.entities.User;
 import com.cakedevs.ChildLabourBot.listeners.NeukseksListener;
 import com.cakedevs.ChildLabourBot.repository.ChildRepository;
+import com.cakedevs.ChildLabourBot.repository.UpgradesRepository;
 import com.cakedevs.ChildLabourBot.repository.UserRepository;
 import com.cakedevs.ChildLabourBot.services.ChildService;
 import com.cakedevs.ChildLabourBot.services.MessagingService;
@@ -22,6 +24,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class NeukseksListenerImpl implements NeukseksListener {
@@ -37,12 +40,15 @@ public class NeukseksListenerImpl implements NeukseksListener {
     @Autowired
     private ChildRepository childRepository;
 
+    @Autowired
+    private UpgradesRepository upgradesRepository;
+
     private HashMap<String, Instant> cooldowns = new HashMap<String, Instant>();
 
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
         // constraints
-        int maxChilds = 10;
+        AtomicInteger maxChilds = new AtomicInteger(10);
         int delayInMinutes = 60;
         int loserBedrockGiven = 200;
 
@@ -120,7 +126,10 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                         done.set(true);
                                                         messageCreateEvent.getChannel().sendMessage(answerListener.getMessageAuthor().getName() + " took the kids. Can I at least see them at Christmas?");
 
-                                                        if (childRepository.findChildsByUserid(answerListener.getMessageAuthor().getIdAsString()).size() < maxChilds) {
+                                                        Optional<Upgrades> upgrades = upgradesRepository.findUpgradesByUserid(answerListener.getMessageAuthor().getIdAsString());
+                                                        maxChilds.addAndGet(upgrades.get().getMaxchildsupgrade() - 1);
+
+                                                        if (childRepository.findChildsByUserid(answerListener.getMessageAuthor().getIdAsString()).size() < maxChilds.get()) {
                                                             messageCreateEvent.getChannel().sendMessage("Hoe mag het strontjong gaan heten?");
                                                             messageCreateEvent.getChannel().addMessageCreateListener(childNameListener -> {
                                                                 if (childNameListener.getMessageAuthor().getId() == answerListener.getMessageAuthor().getId() && !childCreated.get()) {
