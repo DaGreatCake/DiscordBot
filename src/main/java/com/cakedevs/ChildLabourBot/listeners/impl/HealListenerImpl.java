@@ -17,6 +17,7 @@ import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -111,7 +112,7 @@ public class HealListenerImpl implements HealListener {
                                             + child.getHealthpoints() + " hitpoints.");
                                 }
                             }
-                        });
+                        }).removeAfter(30, TimeUnit.SECONDS);
                     } else {
                         messageCreateEvent.getChannel().sendMessage("Gast je kan niemand healen als je geen kinderen hebt.\nDoe eerst +neukseks");
                     }

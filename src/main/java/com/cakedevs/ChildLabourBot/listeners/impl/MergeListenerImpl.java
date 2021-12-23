@@ -17,6 +17,7 @@ import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -154,9 +155,9 @@ public class MergeListenerImpl implements MergeListener {
                                                 + " heeft nu " + child1.get().getHealthpointsmax() + " max hitpoints.\nHij bezit op het moment over "
                                                 + child1.get().getHealthpoints() + " hitpoints.\nHelaas is " + child2.get().getName() + " hierbij overleden.");
                                     }
-                                });
+                                }).removeAfter(30, TimeUnit.SECONDS);
                             }
-                        });
+                        }).removeAfter(30, TimeUnit.SECONDS);
                     } else {
                         messageCreateEvent.getChannel().sendMessage("Je hebt minimaal 2 kinderen nodig, ga eerst neukseksen ofzo");
                     }

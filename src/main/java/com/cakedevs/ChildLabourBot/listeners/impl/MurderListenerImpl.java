@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -183,9 +184,9 @@ public class MurderListenerImpl implements MurderListener {
                                                             childRepository.deleteById(attackerChild.get().getId());
                                                         }
                                                     }
-                                                });
+                                                }).removeAfter(30, TimeUnit.SECONDS);
                                             }
-                                        });
+                                        }).removeAfter(30, TimeUnit.SECONDS);
                                     } else {
                                         messageCreateEvent.getChannel().sendMessage("Bro je bent letterlijk noob, ga eerst neukseksen ofzo");
                                     }
