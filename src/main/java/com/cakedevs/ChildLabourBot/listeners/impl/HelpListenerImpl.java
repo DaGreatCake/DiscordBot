@@ -21,6 +21,7 @@ public class HelpListenerImpl implements HelpListener {
                             "+bal - Check hoeveel moneys je hebt. \n" +
                             "+buy - Koop een upgrade of status. \n" +
                             "+heal - Heal een kind tot full hitpoints. \n" +
+                            "+kidnap - Kidnap een kind.\n" +
                             "+listchilds - Laat al je kinderen zien. \n" +
                             "+merge - Merge 2 kinderen voor 150% van hun hp. \n" +
                             "+murder - Doe een poging tot moord.\n" +
