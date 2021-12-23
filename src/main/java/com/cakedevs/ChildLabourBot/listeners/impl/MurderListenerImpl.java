@@ -91,8 +91,8 @@ public class MurderListenerImpl implements MurderListener {
                                                     + child.getMiningspeed() + ", hitpoints: " + child.getHealthpoints() + "\n";
                                         }
 
-                                        AtomicReference<Child> victimChild = null;
-                                        AtomicReference<Child> attackerChild = null;
+                                        AtomicReference<Child> victimChild = new AtomicReference<Child>();
+                                        AtomicReference<Child> attackerChild = new AtomicReference<Child>();
 
                                         messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
                                                 "Kies een child id om aan te vallen",
