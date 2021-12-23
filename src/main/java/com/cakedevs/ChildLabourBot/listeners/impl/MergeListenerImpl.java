@@ -156,6 +156,9 @@ public class MergeListenerImpl implements MergeListener {
                                                 + child1.get().getHealthpoints() + " hitpoints.\nHelaas is " + child2.get().getName() + " hierbij overleden.");
                                     }
                                 }).removeAfter(30, TimeUnit.SECONDS);
+                                if (!doneInside.get()) {
+                                    cooldowns.replace(messageCreateEvent.getMessageAuthor().getIdAsString(), LocalDateTime.now().toInstant(ZoneOffset.UTC));
+                                }
                             }
                         }).removeAfter(30, TimeUnit.SECONDS);
                     } else {
