@@ -32,6 +32,9 @@ public class ChildLabourBotApplication {
 	private ListChildsListener listChildsListener;
 
 	@Autowired
+	private MergeListener mergeListener;
+
+	@Autowired
 	private MurderListener murderListener;
 
 	@Autowired
@@ -59,6 +62,7 @@ public class ChildLabourBotApplication {
 		api.addMessageCreateListener(healListener);
 		api.addMessageCreateListener(helpListener);
 		api.addMessageCreateListener(listChildsListener);
+		api.addMessageCreateListener(mergeListener);
 		api.addMessageCreateListener(murderListener);
 		api.addMessageCreateListener(neukseksListener);
 		api.addMessageCreateListener(userListener);

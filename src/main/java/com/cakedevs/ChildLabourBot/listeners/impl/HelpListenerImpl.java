@@ -21,8 +21,9 @@ public class HelpListenerImpl implements HelpListener {
                             "+bal - Check hoeveel moneys je hebt. \n" +
                             "+heal - Heal een kind tot full hitpoints. \n" +
                             "+listchilds - Laat al je kinderen zien. \n" +
-                            "+neukseks - Maak een kind. \n" +
-                            "+murder - Doe een poging tot moord.",
+                            "+merge - Merge 2 kinderen voor 150% van hun hp. \n" +
+                            "+murder - Doe een poging tot moord.\n" +
+                            "+neukseks - Maak een kind.",
                     null,
                     null,
                     messageCreateEvent.getChannel());
