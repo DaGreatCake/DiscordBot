@@ -2,5 +2,5 @@ package com.cakedevs.ChildLabourBot.listeners;
 
 import org.javacord.api.listener.message.MessageCreateListener;
 
-public interface RateListener extends MessageCreateListener {
+public interface KidnapListener extends MessageCreateListener {
 }
