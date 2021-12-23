@@ -77,88 +77,100 @@ public class BuyListenerImpl implements BuyListener {
                     try {
                         int amount = Integer.parseInt(command[2]);
                         if (item.equals("status")) {
-                            int cost = amount * statusPrice;
-                            if (userOptPrimary.get().getBedrock() >= cost) {
-                                userOptPrimary.get().setBedrock(userOptPrimary.get().getBedrock() - cost);
-                                userOptPrimary.get().setStatus(userOptPrimary.get().getStatus() + amount);
-                                User userSave = userRepository.save(userOptPrimary.get());
-                                messageCreateEvent.getChannel().sendMessage("Ziek man je hebt " + amount + " status gekocht.\n"
-                                        + "Je hebt nu " + userOptPrimary.get().getStatus() + " status en " + userOptPrimary.get().getBedrock() + " bedrock.");
+                            if (amount >= 1) {
+                                int cost = amount * statusPrice;
+                                if (userOptPrimary.get().getBedrock() >= cost) {
+                                    userOptPrimary.get().setBedrock(userOptPrimary.get().getBedrock() - cost);
+                                    userOptPrimary.get().setStatus(userOptPrimary.get().getStatus() + amount);
+                                    User userSave = userRepository.save(userOptPrimary.get());
+                                    messageCreateEvent.getChannel().sendMessage("Ziek man je hebt " + amount + " status gekocht.\n"
+                                            + "Je hebt nu " + userOptPrimary.get().getStatus() + " status en " + userOptPrimary.get().getBedrock() + " bedrock.");
+                                } else {
+                                    messageCreateEvent.getChannel().sendMessage("Bro je hebt te weinig bedrock. Laat je kinderen harder werken.");
+                                }
                             } else {
-                                messageCreateEvent.getChannel().sendMessage("Bro je hebt te weinig bedrock. Laat je kinderen harder werken.");
+                                messageCreateEvent.getChannel().sendMessage("Je moet minimaal 1 kopen.");
                             }
                         } else if (item.equals("max")) {
-                            int cost = 0;
-                            userMaxChildUpgradePrice = upgrades.get().getMaxchildsupgrade() * maxChildUpgradePrice;
-                            for (int i = upgrades.get().getMaxchildsupgrade(); i <= upgrades.get().getMaxchildsupgrade() + amount - 1; i++) {
-                                cost += i * 1000;
-                            }
-
-                            if (userOptPrimary.get().getBedrock() >= cost) {
-                                userOptPrimary.get().setBedrock(userOptPrimary.get().getBedrock() - cost);
-                                upgrades.get().setMaxchildsupgrade(upgrades.get().getMaxchildsupgrade() + amount);
-                                User userSave = userRepository.save(userOptPrimary.get());
-                                Upgrades upgradesSave = upgradesRepository.save(upgrades.get());
-                                messageCreateEvent.getChannel().sendMessage("Ziek man je hebt " + amount + " extra kinderslots gekocht.\n"
-                                        + "Je kan nu " + upgrades.get().getMaxchildsupgrade() + 9 + " kinderen hebben.\n"
-                                        + "Je hebt nog " + userOptPrimary.get().getBedrock() + " bedrock.");
-                            } else {
-                                messageCreateEvent.getChannel().sendMessage("Bro je hebt te weinig bedrock. Laat je kinderen harder werken.");
-                            }
-                        } else if (item.equals("mining")) {
-                            if (userOptPrimary.get().getBedrock() >= speedUpgradePrice) {
-                                String childChoose = "";
-
-                                for (Child child : userChilds) {
-                                    childChoose += "Id: " + child.getId() + ", name: " + child.getName() + ", mining speed: "
-                                            + child.getMiningspeed() + ", hitpoints: " + child.getHealthpoints() + ", max hitpoints: " + child.getHealthpointsmax() + "\n";
+                            if (amount >= 1) {
+                                int cost = 0;
+                                userMaxChildUpgradePrice = upgrades.get().getMaxchildsupgrade() * maxChildUpgradePrice;
+                                for (int i = upgrades.get().getMaxchildsupgrade(); i <= upgrades.get().getMaxchildsupgrade() + amount - 1; i++) {
+                                    cost += i * 1000;
                                 }
 
-                                messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
-                                        "Kies een child id om de mining speed te upgraden",
-                                        childChoose,
-                                        null,
-                                        null,
-                                        messageCreateEvent.getChannel());
-
-                                AtomicLong childId = new AtomicLong(-1);
-
-                                messageCreateEvent.getChannel().addMessageCreateListener(chooseListener -> {
-                                    if (chooseListener.getMessageAuthor().getId() == messageCreateEvent.getMessageAuthor().getId() && !done.get()) {
-                                        long id;
-                                        try {
-                                            id = Long.parseLong(chooseListener.getMessageContent());
-                                            for (Child child : userChilds) {
-                                                if (child.getId() == id) {
-                                                    childId.set(id);
-                                                    done.set(true);
-                                                }
-                                            }
-                                            if (!done.get()) {
-                                                messageCreateEvent.getChannel().sendMessage("Bro die bestaat niet.");
-                                            }
-                                        } catch (NumberFormatException ex) {
-                                            messageCreateEvent.getChannel().sendMessage("Bro dat is letterlijk geen getal.");
-                                        }
-                                    }
-
-                                    if (done.get() && !doneInside.get()) {
-                                        doneInside.set(true);
-
-                                        Optional<Child> childOpt = childRepository.findChildById(childId.get());
-                                        if (childOpt.isPresent()) {
-                                            userOptPrimary.get().setBedrock(userOptPrimary.get().getBedrock() - speedUpgradePrice * amount);
-                                            User userSave = userRepository.save(userOptPrimary.get());
-                                            childOpt.get().setMiningspeed(childOpt.get().getMiningspeed() + 1);
-                                            Child child = childRepository.save(childOpt.get());
-
-                                            messageCreateEvent.getChannel().sendMessage(child.getName() + " werkt nu bonkie hard.\nHij heeft nu "
-                                                    + child.getMiningspeed() + " mining speed.\nJij beschikt nog over " + userOptPrimary.get().getBedrock() + " bedrock.");
-                                        }
-                                    }
-                                }).removeAfter(30, TimeUnit.SECONDS);
+                                if (userOptPrimary.get().getBedrock() >= cost) {
+                                    userOptPrimary.get().setBedrock(userOptPrimary.get().getBedrock() - cost);
+                                    upgrades.get().setMaxchildsupgrade(upgrades.get().getMaxchildsupgrade() + amount);
+                                    User userSave = userRepository.save(userOptPrimary.get());
+                                    Upgrades upgradesSave = upgradesRepository.save(upgrades.get());
+                                    messageCreateEvent.getChannel().sendMessage("Ziek man je hebt " + amount + " extra kinderslots gekocht.\n"
+                                            + "Je kan nu " + upgrades.get().getMaxchildsupgrade() + 9 + " kinderen hebben.\n"
+                                            + "Je hebt nog " + userOptPrimary.get().getBedrock() + " bedrock.");
+                                } else {
+                                    messageCreateEvent.getChannel().sendMessage("Bro je hebt te weinig bedrock. Laat je kinderen harder werken.");
+                                }
                             } else {
-                                messageCreateEvent.getChannel().sendMessage("Bro je hebt te weinig bedrock. Laat je kinderen harder werken.");
+                                messageCreateEvent.getChannel().sendMessage("Je moet minimaal 1 kopen.");
+                            }
+                        } else if (item.equals("mining")) {
+                            if (amount >= 1) {
+                                if (userOptPrimary.get().getBedrock() >= speedUpgradePrice) {
+                                    String childChoose = "";
+
+                                    for (Child child : userChilds) {
+                                        childChoose += "Id: " + child.getId() + ", name: " + child.getName() + ", mining speed: "
+                                                + child.getMiningspeed() + ", hitpoints: " + child.getHealthpoints() + ", max hitpoints: " + child.getHealthpointsmax() + "\n";
+                                    }
+
+                                    messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
+                                            "Kies een child id om de mining speed te upgraden",
+                                            childChoose,
+                                            null,
+                                            null,
+                                            messageCreateEvent.getChannel());
+
+                                    AtomicLong childId = new AtomicLong(-1);
+
+                                    messageCreateEvent.getChannel().addMessageCreateListener(chooseListener -> {
+                                        if (chooseListener.getMessageAuthor().getId() == messageCreateEvent.getMessageAuthor().getId() && !done.get()) {
+                                            long id;
+                                            try {
+                                                id = Long.parseLong(chooseListener.getMessageContent());
+                                                for (Child child : userChilds) {
+                                                    if (child.getId() == id) {
+                                                        childId.set(id);
+                                                        done.set(true);
+                                                    }
+                                                }
+                                                if (!done.get()) {
+                                                    messageCreateEvent.getChannel().sendMessage("Bro die bestaat niet.");
+                                                }
+                                            } catch (NumberFormatException ex) {
+                                                messageCreateEvent.getChannel().sendMessage("Bro dat is letterlijk geen getal.");
+                                            }
+                                        }
+
+                                        if (done.get() && !doneInside.get()) {
+                                            doneInside.set(true);
+
+                                            Optional<Child> childOpt = childRepository.findChildById(childId.get());
+                                            if (childOpt.isPresent()) {
+                                                userOptPrimary.get().setBedrock(userOptPrimary.get().getBedrock() - speedUpgradePrice * amount);
+                                                User userSave = userRepository.save(userOptPrimary.get());
+                                                childOpt.get().setMiningspeed(childOpt.get().getMiningspeed() + 1);
+                                                Child child = childRepository.save(childOpt.get());
+
+                                                messageCreateEvent.getChannel().sendMessage(child.getName() + " werkt nu bonkie hard.\nHij heeft nu "
+                                                        + child.getMiningspeed() + " mining speed.\nJij beschikt nog over " + userOptPrimary.get().getBedrock() + " bedrock.");
+                                            }
+                                        }
+                                    }).removeAfter(30, TimeUnit.SECONDS);
+                                } else {
+                                    messageCreateEvent.getChannel().sendMessage("Bro je hebt te weinig bedrock. Laat je kinderen harder werken.");
+                                }
+                            } else {
+                                messageCreateEvent.getChannel().sendMessage("Je moet minimaal 1 kopen.");
                             }
                         }
                     } catch (NumberFormatException ex) {
