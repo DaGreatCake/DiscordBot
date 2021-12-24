@@ -69,7 +69,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
                         userID = userID.replace(">", "");
                         Optional<User> userOpt = userRepository.findUserById(userID);
 
-                        if (userOpt.isPresent()) {
+                        if (userOpt.isPresent() && !done.get()) {
                             //if (childRepository.findChildsByUserid(userOpt.get().getId()).size() < maxChilds) {
                             if (messageCreateEvent.getMessageAuthor().getId() != Long.parseLong(userOpt.get().getId())) {
                                 Random r = new Random();
@@ -173,7 +173,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
                         messageCreateEvent.getChannel().sendMessage("Bro ga iemand pingen in je command dan ofzo?");
                     }
                 } else {
-                    long difference = System.nanoTime() - cooldown.get().getNeuksekscooldown();
+                    long difference = cooldown.get().getNeuksekscooldown() - System.nanoTime();
                     messageCreateEvent.getChannel().sendMessage("Bro rustig man bro, je moet nog " + Tools.getReadableTime(difference) + " wachten.");
                 }
             } else {

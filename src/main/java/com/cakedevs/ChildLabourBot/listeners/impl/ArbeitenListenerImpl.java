@@ -41,7 +41,7 @@ public class ArbeitenListenerImpl implements ArbeitenListener {
                 Optional<Cooldown> cooldown = cooldownRepository.findCooldownByUserid(messageCreateEvent.getMessageAuthor().getIdAsString());
                 if (System.nanoTime() > cooldown.get().getArbeitencooldown()) {
                     List<Child> userChilds = childRepository.findChildsByUserid(messageCreateEvent.getMessageAuthor().getIdAsString());
-                    if (userChilds.size() != 0) {
+                    if (userChilds.size() != 0 && !done.get()) {
                         cooldown.get().setArbeitencooldown(System.nanoTime() + (delayInMinutes * 60000000000L));
                         cooldownRepository.save(cooldown.get());
                         done.set(true);
@@ -58,7 +58,7 @@ public class ArbeitenListenerImpl implements ArbeitenListener {
                         messageCreateEvent.getChannel().sendMessage("Gast je kan niemand laten werken als je geen kindslaven hebt.\nDoe eerst +neukseks");
                     }
                 } else {
-                    long difference = System.nanoTime() - cooldown.get().getArbeitencooldown();
+                    long difference = cooldown.get().getArbeitencooldown() - System.nanoTime();
                     messageCreateEvent.getChannel().sendMessage("Bro rustig man bro, je moet nog " + Tools.getReadableTime(difference) + " wachten.");
                 }
             } else {

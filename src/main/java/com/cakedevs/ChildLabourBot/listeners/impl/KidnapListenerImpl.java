@@ -60,7 +60,7 @@ public class KidnapListenerImpl implements KidnapListener {
                         if (userOpt.isPresent()) {
                             if (messageCreateEvent.getMessageAuthor().getId() != Long.parseLong(userOpt.get().getId())) {
                                 List<Child> enemyChilds = childRepository.findChildsByUserid(userOpt.get().getId());
-                                if (enemyChilds.size() != 0) {
+                                if (enemyChilds.size() != 0 && !doneInside.get()) {
                                     cooldown.get().setKidnapcooldown(System.nanoTime() + (delayInMinutes * 60000000000L));
                                     cooldownRepository.save(cooldown.get());
                                     String childChoose = "";
@@ -140,7 +140,7 @@ public class KidnapListenerImpl implements KidnapListener {
                         messageCreateEvent.getChannel().sendMessage("Bro ga iemand pingen ofzo.");
                     }
                 } else {
-                    long difference = System.nanoTime() - cooldown.get().getKidnapcooldown();
+                    long difference = cooldown.get().getKidnapcooldown() - System.nanoTime();
                     messageCreateEvent.getChannel().sendMessage("Bro rustig man bro, je moet nog " + Tools.getReadableTime(difference) + " wachten.");
                 }
             } else {

@@ -66,7 +66,7 @@ public class MurderListenerImpl implements MurderListener {
                                 List<Child> enemyChilds = childRepository.findChildsByUserid(userOpt.get().getId());
                                 List<Child> userChilds = childRepository.findChildsByUserid(messageCreateEvent.getMessageAuthor().getIdAsString());
                                 if (enemyChilds.size() != 0) {
-                                    if (userChilds.size() != 0) {
+                                    if (userChilds.size() != 0 && !doneInside.get()) {
                                         cooldown.get().setMurdercooldown(System.nanoTime() + (delayInMinutes * 60000000000L));
                                         cooldownRepository.save(cooldown.get());
                                         done.set(true);
@@ -191,7 +191,7 @@ public class MurderListenerImpl implements MurderListener {
                         messageCreateEvent.getChannel().sendMessage("Bro ga iemand pingen ofzo.");
                     }
                 } else {
-                    long difference = System.nanoTime() - cooldown.get().getMurdercooldown();
+                    long difference = cooldown.get().getMurdercooldown() - System.nanoTime();
                     messageCreateEvent.getChannel().sendMessage("Bro rustig man bro, je moet nog " + Tools.getReadableTime(difference) + " wachten.");
                 }
             } else {

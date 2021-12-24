@@ -47,7 +47,7 @@ public class HealListenerImpl implements HealListener {
                 Optional<Cooldown> cooldown = cooldownRepository.findCooldownByUserid(messageCreateEvent.getMessageAuthor().getIdAsString());
                 if (System.nanoTime() > cooldown.get().getHealcooldown()) {
                     List<Child> userChilds = childRepository.findChildsByUserid(messageCreateEvent.getMessageAuthor().getIdAsString());
-                    if (userChilds.size() != 0) {
+                    if (userChilds.size() != 0 && !doneInside.get()) {
                         cooldown.get().setHealcooldown(System.nanoTime() + (delayInMinutes * 60000000000L));
                         cooldownRepository.save(cooldown.get());
                         String childChoose = "";
@@ -97,12 +97,12 @@ public class HealListenerImpl implements HealListener {
                                             + child.getHealthpoints() + " hitpoints.");
                                 }
                             }
-                        }).removeAfter(60, TimeUnit.SECONDS);
+                        });
                     } else {
                         messageCreateEvent.getChannel().sendMessage("Gast je kan niemand healen als je geen kinderen hebt.\nDoe eerst +neukseks");
                     }
                 } else {
-                    long difference = System.nanoTime() - cooldown.get().getHealcooldown();
+                    long difference = cooldown.get().getHealcooldown() - System.nanoTime();
                     messageCreateEvent.getChannel().sendMessage("Bro rustig man bro, je moet nog " + Tools.getReadableTime(difference) + " wachten.");
                 }
             } else {

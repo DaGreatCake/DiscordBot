@@ -49,7 +49,7 @@ public class MergeListenerImpl implements MergeListener {
                 Optional<Cooldown> cooldown = cooldownRepository.findCooldownByUserid(messageCreateEvent.getMessageAuthor().getIdAsString());
                 if (System.nanoTime() > cooldown.get().getMergecooldown()) {
                     List<Child> userChilds = childRepository.findChildsByUserid(messageCreateEvent.getMessageAuthor().getIdAsString());
-                    if (userChilds.size() > 1) {
+                    if (userChilds.size() > 1 && !doneInside.get()) {
                         cooldown.get().setMergecooldown(System.nanoTime() + (delayInMinutes * 60000000000L));
                         cooldownRepository.save(cooldown.get());
                         done.set(true);
@@ -147,7 +147,7 @@ public class MergeListenerImpl implements MergeListener {
                         messageCreateEvent.getChannel().sendMessage("Je hebt minimaal 2 kinderen nodig, ga eerst neukseksen ofzo");
                     }
                 } else {
-                    long difference = System.nanoTime() - cooldown.get().getMergecooldown();
+                    long difference = cooldown.get().getMergecooldown() - System.nanoTime();
                     messageCreateEvent.getChannel().sendMessage("Bro rustig man bro, je moet nog " + Tools.getReadableTime(difference) + " wachten.");
                 }
             } else {
