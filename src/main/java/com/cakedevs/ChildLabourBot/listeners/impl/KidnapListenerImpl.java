@@ -1,20 +1,18 @@
 package com.cakedevs.ChildLabourBot.listeners.impl;
 
 import com.cakedevs.ChildLabourBot.entities.Child;
+import com.cakedevs.ChildLabourBot.entities.Cooldown;
 import com.cakedevs.ChildLabourBot.entities.User;
 import com.cakedevs.ChildLabourBot.listeners.KidnapListener;
 import com.cakedevs.ChildLabourBot.repository.ChildRepository;
+import com.cakedevs.ChildLabourBot.repository.CooldownRepository;
 import com.cakedevs.ChildLabourBot.repository.UserRepository;
 import com.cakedevs.ChildLabourBot.services.MessagingService;
+import com.cakedevs.ChildLabourBot.tools.Tools;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -33,7 +31,8 @@ public class KidnapListenerImpl implements KidnapListener {
     @Autowired
     private ChildRepository childRepository;
 
-    private HashMap<String, Instant> cooldowns = new HashMap<String, Instant>();
+    @Autowired
+    private CooldownRepository cooldownRepository;
 
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
@@ -43,18 +42,12 @@ public class KidnapListenerImpl implements KidnapListener {
 
         AtomicBoolean done = new AtomicBoolean(false);
         AtomicBoolean doneInside = new AtomicBoolean(false);
-        boolean allow = true;
-
-        if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
-            if (cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()).isAfter(LocalDateTime.now().toInstant(ZoneOffset.UTC))) {
-                allow = false;
-            }
-        }
 
         if(messageCreateEvent.getMessageContent().toLowerCase().startsWith("+kidnap")) {
             Optional<User> userOptPrimary = userRepository.findUserById(messageCreateEvent.getMessageAuthor().getIdAsString());
             if (userOptPrimary.isPresent()) {
-                if (allow) {
+                Optional<Cooldown> cooldown = cooldownRepository.findCooldownByUserid(messageCreateEvent.getMessageAuthor().getIdAsString());
+                if (System.nanoTime() > cooldown.get().getKidnapcooldown()) {
                     String[] command = messageCreateEvent.getMessageContent().split(" ");
                     if (command.length > 1) {
                         String userID = command[1];
@@ -68,16 +61,7 @@ public class KidnapListenerImpl implements KidnapListener {
                             if (messageCreateEvent.getMessageAuthor().getId() != Long.parseLong(userOpt.get().getId())) {
                                 List<Child> enemyChilds = childRepository.findChildsByUserid(userOpt.get().getId());
                                 if (enemyChilds.size() != 0) {
-                                    Instant cooldown = LocalDateTime.now().plusMinutes(delayInMinutes).toInstant(ZoneOffset.UTC);
-
-                                    if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
-                                        if (cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()).isAfter(LocalDateTime.now().toInstant(ZoneOffset.UTC)) && !done.get()) {
-                                            cooldowns.replace(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
-                                        }
-                                    } else {
-                                        cooldowns.put(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
-                                    }
-
+                                    cooldown.get().setKidnapcooldown(System.nanoTime() + (delayInMinutes * 60000000000L));
                                     String childChoose = "";
 
                                     for (Child child : enemyChilds) {
@@ -136,11 +120,11 @@ public class KidnapListenerImpl implements KidnapListener {
                                                     messageCreateEvent.getChannel().sendMessage("Je hebt nog " + userOptPrimary.get().getBedrock() + " bedrock.");
                                                 } else {
                                                     messageCreateEvent.getChannel().sendMessage("Bro je hebt letterlijk te weinig bedrock noob.");
-                                                    cooldowns.replace(messageCreateEvent.getMessageAuthor().getIdAsString(), LocalDateTime.now().toInstant(ZoneOffset.UTC));
+                                                    cooldown.get().setKidnapcooldown(0);
                                                 }
                                             }
                                         }
-                                    }).removeAfter(30, TimeUnit.SECONDS);
+                                    }).removeAfter(60, TimeUnit.SECONDS);
                                 } else {
                                     messageCreateEvent.getChannel().sendMessage("Deze noob heeft geen kinderen om te jatten.");
                                 }
@@ -154,9 +138,8 @@ public class KidnapListenerImpl implements KidnapListener {
                         messageCreateEvent.getChannel().sendMessage("Bro ga iemand pingen ofzo.");
                     }
                 } else {
-                    Duration difference = Duration.between(LocalDateTime.now().toInstant(ZoneOffset.UTC), cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()));
-                    messageCreateEvent.getChannel().sendMessage("Bro rustig man bro, je moet nog " + difference.toHours() + " uur, "
-                            + difference.toMinutesPart() + " minuten en " + difference.toSecondsPart() + " seconden wachten.");
+                    long difference = System.nanoTime() - cooldown.get().getKidnapcooldown();
+                    messageCreateEvent.getChannel().sendMessage("Bro rustig man bro, je moet nog " + Tools.getReadableTime(difference) + " wachten.");
                 }
             } else {
                 messageCreateEvent.getChannel().sendMessage("Je hebt nog geen account, doe eerst +start");

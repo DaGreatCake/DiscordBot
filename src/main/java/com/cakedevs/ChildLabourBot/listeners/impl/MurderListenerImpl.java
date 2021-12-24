@@ -1,24 +1,23 @@
 package com.cakedevs.ChildLabourBot.listeners.impl;
 
 import com.cakedevs.ChildLabourBot.entities.Child;
+import com.cakedevs.ChildLabourBot.entities.Cooldown;
 import com.cakedevs.ChildLabourBot.entities.User;
 import com.cakedevs.ChildLabourBot.listeners.MurderListener;
 import com.cakedevs.ChildLabourBot.repository.ChildRepository;
+import com.cakedevs.ChildLabourBot.repository.CooldownRepository;
 import com.cakedevs.ChildLabourBot.repository.UserRepository;
 import com.cakedevs.ChildLabourBot.services.MessagingService;
+import com.cakedevs.ChildLabourBot.tools.Tools;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -33,6 +32,9 @@ public class MurderListenerImpl implements MurderListener {
     @Autowired
     private ChildRepository childRepository;
 
+    @Autowired
+    private CooldownRepository cooldownRepository;
+
     private HashMap<String, Instant> cooldowns = new HashMap<String, Instant>();
 
     @Override
@@ -44,18 +46,12 @@ public class MurderListenerImpl implements MurderListener {
         AtomicBoolean attackerChosen = new AtomicBoolean(false);
         AtomicBoolean done = new AtomicBoolean(false);
         AtomicBoolean doneInside = new AtomicBoolean(false);
-        boolean allow = true;
-
-        if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
-            if (cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()).isAfter(LocalDateTime.now().toInstant(ZoneOffset.UTC))) {
-                allow = false;
-            }
-        }
 
         if(messageCreateEvent.getMessageContent().toLowerCase(Locale.ROOT).startsWith("+murder")) {
             Optional<User> userOptPrimary = userRepository.findUserById(messageCreateEvent.getMessageAuthor().getIdAsString());
             if (userOptPrimary.isPresent()) {
-                if (allow) {
+                Optional<Cooldown> cooldown = cooldownRepository.findCooldownByUserid(messageCreateEvent.getMessageAuthor().getIdAsString());
+                if (System.nanoTime() > cooldown.get().getMurdercooldown()) {
                     String[] command = messageCreateEvent.getMessageContent().split(" ");
                     if (command.length > 1) {
                         String userID = command[1];
@@ -71,16 +67,7 @@ public class MurderListenerImpl implements MurderListener {
                                 List<Child> userChilds = childRepository.findChildsByUserid(messageCreateEvent.getMessageAuthor().getIdAsString());
                                 if (enemyChilds.size() != 0) {
                                     if (userChilds.size() != 0) {
-                                        Instant cooldown = LocalDateTime.now().plusMinutes(delayInMinutes).toInstant(ZoneOffset.UTC);
-
-                                        if (cooldowns.containsKey(messageCreateEvent.getMessageAuthor().getIdAsString())) {
-                                            if (cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()).isAfter(LocalDateTime.now().toInstant(ZoneOffset.UTC)) && !done.get()) {
-                                                cooldowns.replace(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
-                                            }
-                                        } else {
-                                            cooldowns.put(messageCreateEvent.getMessageAuthor().getIdAsString(), cooldown);
-                                        }
-
+                                        cooldown.get().setMurdercooldown(System.nanoTime() + (delayInMinutes * 60000000000L));
                                         done.set(true);
                                         String enemyChildChoose = "";
                                         String userChildChoose = "";
@@ -184,9 +171,9 @@ public class MurderListenerImpl implements MurderListener {
                                                             childRepository.deleteById(attackerChild.get().getId());
                                                         }
                                                     }
-                                                }).removeAfter(30, TimeUnit.SECONDS);
+                                                });
                                             }
-                                        }).removeAfter(30, TimeUnit.SECONDS);
+                                        });
                                     } else {
                                         messageCreateEvent.getChannel().sendMessage("Bro je bent letterlijk noob, ga eerst neukseksen ofzo");
                                     }
@@ -203,9 +190,8 @@ public class MurderListenerImpl implements MurderListener {
                         messageCreateEvent.getChannel().sendMessage("Bro ga iemand pingen ofzo.");
                     }
                 } else {
-                    Duration difference = Duration.between(LocalDateTime.now().toInstant(ZoneOffset.UTC), cooldowns.get(messageCreateEvent.getMessageAuthor().getIdAsString()));
-                    messageCreateEvent.getChannel().sendMessage("Bro rustig man bro, je moet nog " + difference.toHours() + " uur, "
-                            + difference.toMinutesPart() + " minuten en " + difference.toSecondsPart() + " seconden wachten.");
+                    long difference = System.nanoTime() - cooldown.get().getMurdercooldown();
+                    messageCreateEvent.getChannel().sendMessage("Bro rustig man bro, je moet nog " + Tools.getReadableTime(difference) + " wachten.");
                 }
             } else {
                 messageCreateEvent.getChannel().sendMessage("Je hebt nog geen account, doe eerst +start");

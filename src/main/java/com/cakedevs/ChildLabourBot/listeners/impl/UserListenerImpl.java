@@ -1,9 +1,11 @@
 package com.cakedevs.ChildLabourBot.listeners.impl;
 
+import com.cakedevs.ChildLabourBot.entities.Cooldown;
 import com.cakedevs.ChildLabourBot.entities.Upgrades;
 import com.cakedevs.ChildLabourBot.entities.User;
 import com.cakedevs.ChildLabourBot.exceptions.UserExistsException;
 import com.cakedevs.ChildLabourBot.listeners.UserListener;
+import com.cakedevs.ChildLabourBot.services.CooldownService;
 import com.cakedevs.ChildLabourBot.services.MessagingService;
 import com.cakedevs.ChildLabourBot.services.UpgradesService;
 import com.cakedevs.ChildLabourBot.services.UserService;
@@ -22,15 +24,21 @@ public class UserListenerImpl implements UserListener {
     @Autowired
     private UpgradesService upgradesService;
 
+    @Autowired
+    private CooldownService cooldownService;
+
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
         if(messageCreateEvent.getMessageContent().equalsIgnoreCase("+start")) {
             // Create the user
             User user;
             Upgrades upgrades;
+            Cooldown cooldown;
             try {
                 user = userService.createUser(messageCreateEvent.getMessageAuthor().getIdAsString(), messageCreateEvent.getMessageAuthor().getDisplayName());
                 upgrades = upgradesService.createUpgrades(messageCreateEvent.getMessageAuthor().getIdAsString());
+                cooldown = cooldownService.createCooldown(messageCreateEvent.getMessageAuthor().getIdAsString());
+
             } catch (UserExistsException e) {
                 messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
                         "Wat de frick man, je hebt dit al gedaan.",

@@ -1,7 +1,6 @@
 package com.cakedevs.ChildLabourBot.listeners.impl;
 
-import com.cakedevs.ChildLabourBot.comparators.UserStatusComparator;
-import com.cakedevs.ChildLabourBot.entities.Child;
+import com.cakedevs.ChildLabourBot.tools.UserStatusComparator;
 import com.cakedevs.ChildLabourBot.entities.User;
 import com.cakedevs.ChildLabourBot.listeners.TopListener;
 import com.cakedevs.ChildLabourBot.repository.UserRepository;

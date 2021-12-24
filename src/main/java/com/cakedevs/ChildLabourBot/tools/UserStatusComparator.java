@@ -1,4 +1,4 @@
-package com.cakedevs.ChildLabourBot.comparators;
+package com.cakedevs.ChildLabourBot.tools;
 
 import com.cakedevs.ChildLabourBot.entities.User;
 
