@@ -100,7 +100,8 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                         .setDescription(num1 + " * " + num2)
                                                         .setFooter("ziek man"));
                                                 message.getChannel().addMessageCreateListener(answerListener -> {
-                                                    if (answerListener.getMessageContent().equals(Integer.toString(num1 * num2)) && !done.get() && answerListener.getMessageAuthor().getIdAsString() == finalUserID) {
+                                                    if (answerListener.getMessageContent().equals(Integer.toString(num1 * num2)) && !done.get()
+                                                            && (answerListener.getMessageAuthor().getIdAsString() == finalUserID || answerListener.getMessageAuthor().getId() == messageCreateEvent.getMessageAuthor().getId())) {
                                                         cooldown.get().setNeuksekscooldown(System.nanoTime() + (delayInMinutes * 60000000000L));
                                                         cooldownRepository.save(cooldown.get());
                                                         done.set(true);
