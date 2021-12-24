@@ -51,7 +51,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
         int loserBedrockGiven = 200;
 
         AtomicBoolean done = new AtomicBoolean(false);
-        AtomicBoolean ignored = new AtomicBoolean(false);
+        AtomicBoolean active = new AtomicBoolean(false);
         AtomicBoolean thumbsDown = new AtomicBoolean(false);
         AtomicBoolean thumbsUp = new AtomicBoolean(false);
         AtomicBoolean childCreated = new AtomicBoolean(false);
@@ -72,7 +72,8 @@ public class NeukseksListenerImpl implements NeukseksListener {
 
                         if (userOpt.isPresent() && !done.get()) {
                             //if (childRepository.findChildsByUserid(userOpt.get().getId()).size() < maxChilds) {
-                            if (messageCreateEvent.getMessageAuthor().getId() != Long.parseLong(userOpt.get().getId())) {
+                            if (messageCreateEvent.getMessageAuthor().getId() != Long.parseLong(userOpt.get().getId()) && cooldown.get().getNeuksekscooldown() != -1) {
+                                cooldown.get().setNeuksekscooldown(-1);
                                 Random r = new Random();
                                 int num1 = r.nextInt(11);
                                 int num2 = r.nextInt(100);
@@ -151,14 +152,11 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                 });
                                             } else if ((listener.getEmoji().equalsEmoji("\uD83D\uDC4E") && listener.getUser().get().getId() == Long.parseLong(finalUserID))
                                                         || (listener.getEmoji().equalsEmoji("\u274C") && listener.getUserId() == messageCreateEvent.getMessageAuthor().getId())
-                                                        && !thumbsUp.get() && !ignored.get()) {
-                                                ignored.set(true);
+                                                        && !thumbsUp.get()) {
                                                 message.edit(new EmbedBuilder()
                                                         .setTitle("Jammer dan")
                                                         .setDescription("Geen neukseks for you."));
                                                 thumbsDown.set(true);
-                                                cooldown.get().setNeuksekscooldown(0);
-                                                cooldownRepository.save(cooldown.get());
                                             }
                                         });
                                     });
