@@ -49,6 +49,7 @@ public class HealListenerImpl implements HealListener {
                     List<Child> userChilds = childRepository.findChildsByUserid(messageCreateEvent.getMessageAuthor().getIdAsString());
                     if (userChilds.size() != 0) {
                         cooldown.get().setHealcooldown(System.nanoTime() + (delayInMinutes * 60000000000L));
+                        cooldownRepository.save(cooldown.get());
                         String childChoose = "";
 
                         for (Child child : userChilds) {

@@ -68,6 +68,7 @@ public class MurderListenerImpl implements MurderListener {
                                 if (enemyChilds.size() != 0) {
                                     if (userChilds.size() != 0) {
                                         cooldown.get().setMurdercooldown(System.nanoTime() + (delayInMinutes * 60000000000L));
+                                        cooldownRepository.save(cooldown.get());
                                         done.set(true);
                                         String enemyChildChoose = "";
                                         String userChildChoose = "";

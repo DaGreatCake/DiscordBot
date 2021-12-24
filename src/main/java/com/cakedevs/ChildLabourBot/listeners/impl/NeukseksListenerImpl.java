@@ -79,6 +79,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                 try {
                                     // make sure to not have double instances of the neukseks
                                     cooldown.get().setNeuksekscooldown(System.nanoTime() + (delayInMinutes * 60000000000L));
+                                    cooldownRepository.save(cooldown.get());
                                     String finalUserID = userID;
                                     messagingService.sendMessage(messageCreateEvent.getMessageAuthor(),
                                              messageCreateEvent.getApi().getUserById(userID).get().getName() + " wil je kontjebonken met "
@@ -100,6 +101,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                         .setFooter("ziek man"));
                                                 message.getChannel().addMessageCreateListener(answerListener -> {
                                                     cooldown.get().setNeuksekscooldown(System.nanoTime() + (delayInMinutes * 60000000000L));
+                                                    cooldownRepository.save(cooldown.get());
 
                                                     if (answerListener.getMessageContent().equals(Integer.toString(num1 * num2)) && !done.get()) {
                                                         done.set(true);
@@ -154,6 +156,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                         .setDescription("Geen neukseks for you."));
                                                 thumbsDown.set(true);
                                                 cooldown.get().setNeuksekscooldown(0);
+                                                cooldownRepository.save(cooldown.get());
                                             }
                                         });
                                     });

@@ -43,6 +43,7 @@ public class ArbeitenListenerImpl implements ArbeitenListener {
                     List<Child> userChilds = childRepository.findChildsByUserid(messageCreateEvent.getMessageAuthor().getIdAsString());
                     if (userChilds.size() != 0) {
                         cooldown.get().setArbeitencooldown(System.nanoTime() + (delayInMinutes * 60000000000L));
+                        cooldownRepository.save(cooldown.get());
                         done.set(true);
                         for (Child child : userChilds) {
                             bedrockMined += child.getMiningspeed();

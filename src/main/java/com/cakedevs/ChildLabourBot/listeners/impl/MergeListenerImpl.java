@@ -51,6 +51,7 @@ public class MergeListenerImpl implements MergeListener {
                     List<Child> userChilds = childRepository.findChildsByUserid(messageCreateEvent.getMessageAuthor().getIdAsString());
                     if (userChilds.size() > 1) {
                         cooldown.get().setMergecooldown(System.nanoTime() + (delayInMinutes * 60000000000L));
+                        cooldownRepository.save(cooldown.get());
                         done.set(true);
                         String userChildChoose1 = "";
                         for (Child child : userChilds) {

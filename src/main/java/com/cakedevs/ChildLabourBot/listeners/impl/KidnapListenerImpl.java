@@ -62,6 +62,7 @@ public class KidnapListenerImpl implements KidnapListener {
                                 List<Child> enemyChilds = childRepository.findChildsByUserid(userOpt.get().getId());
                                 if (enemyChilds.size() != 0) {
                                     cooldown.get().setKidnapcooldown(System.nanoTime() + (delayInMinutes * 60000000000L));
+                                    cooldownRepository.save(cooldown.get());
                                     String childChoose = "";
 
                                     for (Child child : enemyChilds) {
@@ -121,6 +122,7 @@ public class KidnapListenerImpl implements KidnapListener {
                                                 } else {
                                                     messageCreateEvent.getChannel().sendMessage("Bro je hebt letterlijk te weinig bedrock noob.");
                                                     cooldown.get().setKidnapcooldown(0);
+                                                    cooldownRepository.save(cooldown.get());
                                                 }
                                             }
                                         }
