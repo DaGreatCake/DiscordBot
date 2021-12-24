@@ -113,9 +113,6 @@ public class HealListenerImpl implements HealListener {
                                 }
                             }
                         }).removeAfter(30, TimeUnit.SECONDS);
-                        if (!doneInside.get()) {
-                            cooldowns.replace(messageCreateEvent.getMessageAuthor().getIdAsString(), LocalDateTime.now().toInstant(ZoneOffset.UTC));
-                        }
                     } else {
                         messageCreateEvent.getChannel().sendMessage("Gast je kan niemand healen als je geen kinderen hebt.\nDoe eerst +neukseks");
                     }
