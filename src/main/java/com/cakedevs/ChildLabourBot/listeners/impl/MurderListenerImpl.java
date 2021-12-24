@@ -66,7 +66,7 @@ public class MurderListenerImpl implements MurderListener {
                                 List<Child> enemyChilds = childRepository.findChildsByUserid(userOpt.get().getId());
                                 List<Child> userChilds = childRepository.findChildsByUserid(messageCreateEvent.getMessageAuthor().getIdAsString());
                                 if (enemyChilds.size() != 0) {
-                                    if (userChilds.size() != 0 && !doneInside.get()) {
+                                    if (userChilds.size() != 0 && !done.get()) {
                                         cooldown.get().setMurdercooldown(System.nanoTime() + (delayInMinutes * 60000000000L));
                                         cooldownRepository.save(cooldown.get());
                                         done.set(true);

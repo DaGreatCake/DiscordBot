@@ -51,6 +51,7 @@ public class NeukseksListenerImpl implements NeukseksListener {
         int loserBedrockGiven = 200;
 
         AtomicBoolean done = new AtomicBoolean(false);
+        AtomicBoolean ignored = new AtomicBoolean(false);
         AtomicBoolean thumbsDown = new AtomicBoolean(false);
         AtomicBoolean thumbsUp = new AtomicBoolean(false);
         AtomicBoolean childCreated = new AtomicBoolean(false);
@@ -150,7 +151,8 @@ public class NeukseksListenerImpl implements NeukseksListener {
                                                 });
                                             } else if ((listener.getEmoji().equalsEmoji("\uD83D\uDC4E") && listener.getUser().get().getId() == Long.parseLong(finalUserID))
                                                         || (listener.getEmoji().equalsEmoji("\u274C") && listener.getUserId() == messageCreateEvent.getMessageAuthor().getId())
-                                                        && !thumbsUp.get()) {
+                                                        && !thumbsUp.get() && !ignored.get()) {
+                                                ignored.set(true);
                                                 message.edit(new EmbedBuilder()
                                                         .setTitle("Jammer dan")
                                                         .setDescription("Geen neukseks for you."));
