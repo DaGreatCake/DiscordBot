@@ -31,7 +31,7 @@ public class ArbeitenListenerImpl implements ArbeitenListener {
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
         // constraints
-        int delayInMinutes = 15;
+        int delayInMinutes = 10;
 
         AtomicBoolean done = new AtomicBoolean(false);
         boolean allow = true;
