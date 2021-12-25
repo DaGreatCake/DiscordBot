@@ -109,7 +109,7 @@ public class BuyListenerImpl implements BuyListener {
                             }
                         } else if (item.equals("mining")) {
                             if (amount >= 1) {
-                                if (userOptPrimary.get().getBedrock() >= speedUpgradePrice) {
+                                if (userOptPrimary.get().getBedrock() >= (speedUpgradePrice * amount)) {
                                     String childChoose = "";
 
                                     for (Child child : userChilds) {
